@@ -165,6 +165,7 @@ fetch(`http://thesi.generalassemb.ly:8080/post/list`)
         .then(res=>{
             //console.log(res)
         for (let i=0; i< res.length; i++){
+            
             let div=document.createElement('div')
             document.body.appendChild(div)
             div.innerText=res[i].title
@@ -173,11 +174,70 @@ fetch(`http://thesi.generalassemb.ly:8080/post/list`)
             document.body.appendChild(divTwo)
             divTwo.innerText=res[i].description
 
+
             let divThree=document.createElement('div')
             document.body.appendChild(divThree)
             divThree.innerText=res[i].user.username
 
+            let id=res[i].id
+
+            let commentInput=document.createElement('input')
+            document.body.appendChild(commentInput)
             
+            let addCommentButton=document.createElement('button')
+            document.body.appendChild(addCommentButton)
+            addCommentButton.innerText="Add comment"
+            
+            
+            addCommentButton.addEventListener('click', async ()=>{
+                //let userToken= sessionStorage.getItem('token')
+                //console.log(`http://thesi.generalassemb.ly:8080/comment/${id}`)
+                let comment=commentInput.value
+                //console.log(comment)
+                let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
+    
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "text" : comment
+            }),
+        
+            
+
+        });
+        console.log(comment)
+        //comment.save()
+        
+        fetch(`http://thesi.generalassemb.ly:8080/post/${id}/comment`)
+        .then(res => {
+            return res.json()
+            
+        })
+            .then(res=>{
+                console.log(res)
+                
+                for(let i=0; i<res.length; i++){
+                let divComment=document.createElement('div')
+                document.body.appendChild(divComment)
+                div.innerText=res[i].text
+                
+                }
+
+})
+        
+            
+            // let data= await response.json();
+            // sessionStorage.setItem('token', data.userToken);
+
+    })
+            
+
+            
+
+        
 
 
         }
