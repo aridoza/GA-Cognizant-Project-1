@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let response = await fetch('http://thesi.generalassemb.ly:8080/login', {
             method: 'POST',
             headers: {
+                'Access-Control-Allow-Origin': '*',
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
@@ -184,10 +185,8 @@ document.addEventListener('DOMContentLoaded', () => {
             // get all the posts
             fetch(`http://thesi.generalassemb.ly:8080/post/list`)
             .then(res => {
-                return res.json()
-                
+                return res.json()              
             })
-            
             .then(res=>{
                 //console.log(res)
                 for (let i=0; i< res.length; i++){
@@ -242,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             
                             method: 'POST',
                             headers: {
+                                Authorization: 'Bearer ' + sessionStorage.token,
                                 Accept: 'application/json',
                                 'Content-Type': 'application/json',
                             },
@@ -262,33 +262,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         })
                         .then(res=>{
                             console.log(res)
-                            
-                            // for(let i=0; i<res.length; i++){
-                                // let divComment=document.createElement('div')
-                                // document.body.appendChild(divComment)
-                                // div.innerText=res[i].text
-                                
-                                // }
                                 
                             })
                             
-                            
-                            // let data= await response.json();
-                            // sessionStorage.setItem('token', data.userToken);
-                            
                         })
-                        
-                        
-                        
-                        
-                        
-                        
-                        
-                        // let responseData = await response.json();
-                        
-                        // console.log(responseData);
-                        
-                        // return getPosts();
                         
                     };
                 })

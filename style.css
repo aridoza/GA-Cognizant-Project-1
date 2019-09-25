@@ -1,3 +1,7 @@
+#login-signup-container {
+
+}
+
 #login-div {
     text-align: center;
 }
@@ -9,6 +13,10 @@
 
 #all-posts {
     display: none;
+}
+
+#user-profile {
+    /* display: none; */
 }
 
 input {
