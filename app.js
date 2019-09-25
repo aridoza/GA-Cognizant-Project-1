@@ -152,3 +152,32 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutBtn.addEventListener('click', () => logout());
 
 });
+
+
+
+fetch(`http://thesi.generalassemb.ly:8080/post/list`)
+        .then(res => {
+            return res.json()
+            
+        })
+        
+        .then(res=>{
+            //console.log(res)
+        for (let i=0; i< res.length; i++){
+            let div=document.createElement('div')
+            document.body.appendChild(div)
+            div.innerText=res[i].title
+
+            let divTwo=document.createElement('div')
+            document.body.appendChild(divTwo)
+            divTwo.innerText=res[i].description
+
+            let divThree=document.createElement('div')
+            document.body.appendChild(divThree)
+            divThree.innerText=res[i].user.username
+
+            
+
+
+        }
+    })
