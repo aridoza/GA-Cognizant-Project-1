@@ -1,0 +1,19 @@
+#login-div {
+    text-align: center;
+}
+
+#signup-div {
+    display: none;
+    text-align: center;
+}
+
+#all-posts {
+    display: none;
+}
+
+input {
+    display: flex;
+    margin: 10px;
+    align-items: center;
+    justify-content: center;
+}

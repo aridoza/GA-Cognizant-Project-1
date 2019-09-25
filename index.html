@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Bootstrap CDN -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div class="container-fluid">
+        <!-- Login and Signup Container -->
+        <div id="login-signup-container" class="container">
+            <!-- Login Container -->
+            <div id="login-div" class="container">
+                <h2>Log In To Your Account</h2>
+                <input id="login-email" type="text" placeholder="email">
+                <input id="login-password" type="password" password placeholder="password">
+                <button id="login-btn" class="btn btn-primary">Login</button>
+                <button id="show-signup" class="btn btn-primary">Sign Up For New Account</button>
+            </div>
+    
+            <!-- Sign Up Container -->
+            <div id="signup-div" class="container">
+                <h2>Sign Up For a New Account</h2>
+                <input id="signup-email" type="text" placeholder="email">
+                <input id="signup-password" type="password" placeholder="password">
+                <input id="signup-username" type="text" placeholder="username">
+                <button id="signup-btn" class="btn btn-primary">Sign Up</button>
+                <button id="show-login" class="btn btn-primary">Login Instead</button>
+            </div>
+        </div>
+
+        <!-- Logged-in Content -->
+        <div id="all-posts" class="container">
+            <h2 id="posts-header">Latest Posts</h2>
+            <button id="logout-btn" class="btn btn-primary">Log Out</button>
+            <div>Post1</div>
+            <div>Post2</div>
+            <div>Post3</div>
+            <div>Post4</div>
+            <div>Post5</div>
+        </div>
+
+    </div>
+
+    <script src="app.js" type="text/javascript"></script>
+</body>
+</html>
