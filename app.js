@@ -152,55 +152,54 @@ document.addEventListener('DOMContentLoaded', () => {
     // log user out
     logoutBtn.addEventListener('click', () => logout());
 
-});
-
+    
     // get comments by post Id
     const getComments = async (postId) => {
         let response = await fetch(`http://thesi.generalassemb.ly:8080/post/${postId}/comment`);
-
+        
         let data = await response.json();
-
+        
         //return data.text;
-
-
+        
+        
         // need the post.title
         // post.description
         // post.user.username
         // comments
         // if (data.length > 0) {
-        //     console.log(data);
-        //     return data.map(comment => comment.text);
-        // } else {
-        //     return 'No comments yet!';
-        // }
-
-        return data;
-
-        //console.log(data);
-
-        //return 'Hello';
-    }
-
-
-        // get all the posts
-        fetch(`http://thesi.generalassemb.ly:8080/post/list`)
-                .then(res => {
-                    return res.json()
-                    
-                })
+            //     console.log(data);
+            //     return data.map(comment => comment.text);
+            // } else {
+                //     return 'No comments yet!';
+                // }
                 
-                .then(res=>{
-                    //console.log(res)
+                return data;
+                
+                //console.log(data);
+                
+                //return 'Hello';
+            }
+            
+            
+            // get all the posts
+            fetch(`http://thesi.generalassemb.ly:8080/post/list`)
+            .then(res => {
+                return res.json()
+                
+            })
+            
+            .then(res=>{
+                //console.log(res)
                 for (let i=0; i< res.length; i++){
                     // use the post id to get all the comments
                     let postContainer = document.createElement('div');
                     postContainer.className = 'container';
                     document.body.appendChild(postContainer);
-
+                    
                     let div=document.createElement('div')
                     postContainer.appendChild(div)
                     div.innerText=res[i].title
-
+                    
                     let divThree=document.createElement('div')
                     postContainer.appendChild(divThree)
                     divThree.innerText=res[i].user.username
@@ -240,58 +239,84 @@ document.addEventListener('DOMContentLoaded', () => {
                         let comment=commentInput.value
                         //console.log(comment)
                         let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
-            
-                        method: 'POST',
-                        headers: {
-                            Accept: 'application/json',
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            "text" : comment
-                        }),
-                
-                    
-
-                    });
-                    console.log(comment)
-                    //comment.save()
-                
+                            
+                            method: 'POST',
+                            headers: {
+                                Accept: 'application/json',
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                "text" : comment
+                            }),
+                            
+                            
+                            
+                        });
+                        console.log(comment)
+                        //comment.save()
+                        
                         fetch(`http://thesi.generalassemb.ly:8080/post/${id}/comment`)
                         .then(res => {
                             return res.json()
                             
                         })
-                            .then(res=>{
-                                console.log(res)
-                                
-                                // for(let i=0; i<res.length; i++){
+                        .then(res=>{
+                            console.log(res)
+                            
+                            // for(let i=0; i<res.length; i++){
                                 // let divComment=document.createElement('div')
                                 // document.body.appendChild(divComment)
                                 // div.innerText=res[i].text
                                 
                                 // }
-
+                                
+                            })
+                            
+                            
+                            // let data= await response.json();
+                            // sessionStorage.setItem('token', data.userToken);
+                            
+                        })
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                        // let responseData = await response.json();
+                        
+                        // console.log(responseData);
+                        
+                        // return getPosts();
+                        
+                    };
                 })
+
+    const newPostTitle = document.querySelector('#new-post-title');
+    const newPostContent = document.querySelector('#new-post-content');
+    const newPostButton = document.querySelector('#new-post-button');
                 
-                    
-                    // let data= await response.json();
-                    // sessionStorage.setItem('token', data.userToken);
+    newPostButton.addEventListener('click', async () => {
+        let postTitle = newPostTitle.value;
+        let postContent = newPostContent.value;
 
-            })
-                    
+        let response = await fetch('http://thesi.generalassemb.ly:8080/post', {
+            method: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "title": postTitle,
+                "description": postContent,
+            }),
+        })
+        let data = await response.json();
+        //.catch(err => console.log('Error creating new post: ', err));
 
-                    
-
+        return data;
+    })          
                 
-
-
-            // let responseData = await response.json();
-
-            // console.log(responseData);
-            
-            // return getPosts();
-
-                };
-                })
-
-
+});
