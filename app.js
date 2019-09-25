@@ -97,7 +97,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let responseData = await response.json();
 
 
-        // change to localStorage to store token in browser, user won't have to log back in each time if on same browser
         sessionStorage.setItem('token', responseData.token);
         console.log(sessionStorage);
 
