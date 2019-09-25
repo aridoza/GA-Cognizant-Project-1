@@ -154,171 +154,144 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 
+    // get comments by post Id
+    const getComments = async (postId) => {
+        let response = await fetch(`http://thesi.generalassemb.ly:8080/post/${postId}/comment`);
 
-const getPosts = () => {
-    fetch(`http://thesi.generalassemb.ly:8080/post/list`)
-            .then(res => {
-                return res.json()   
-            }) 
-            .then(res=>{
-                //console.log(res)
-            for (let i=0; i< res.length; i++){
-                let div=document.createElement('div')
-                div.id = `post${res[i].id}`;
-                document.body.appendChild(div)
-                div.innerText=res[i].title
-    
-                let divTwo=document.createElement('div')
-                document.body.appendChild(divTwo)
-                divTwo.innerText=res[i].description
-    
-                let divThree=document.createElement('div')
-                document.body.appendChild(divThree)
-                divThree.innerText=res[i].user.username
+        let data = await response.json();
 
-                let commentsDiv = document.createElement('div');
-                document.body.appendChild(commentsDiv);
+        //return data.text;
 
-                let commentText = getComments(res[i].id);
-                commentsDiv.innerText = commentText;
 
-                //commentsDiv.innerText = getComments(res[i].id);
-    
-                let commentInput = document.createElement('input');
-                document.body.appendChild(commentInput);
-                commentInput.placeholder = "enter a comment...";
-    
-                let addCommentButton = document.createElement('button');
-                addCommentButton.innerText = 'Add Comment';
-                document.body.appendChild(addCommentButton);
-                addCommentButton.className = "btn btn-primary";
-                addCommentButton.addEventListener('click', () => addComment(res[i].id, commentInput.value));
-            }
-        });
+        // need the post.title
+        // post.description
+        // post.user.username
+        // comments
+        // if (data.length > 0) {
+        //     console.log(data);
+        //     return data.map(comment => comment.text);
+        // } else {
+        //     return 'No comments yet!';
+        // }
 
-<<<<<<< HEAD
+        return data;
+
+        //console.log(data);
+
+        //return 'Hello';
     }
-=======
-fetch(`http://thesi.generalassemb.ly:8080/post/list`)
-        .then(res => {
-            return res.json()
-            
-        })
-        
-        .then(res=>{
-            //console.log(res)
-        for (let i=0; i< res.length; i++){
-            
-            let div=document.createElement('div')
-            document.body.appendChild(div)
-            div.innerText=res[i].title
->>>>>>> 6c5b9a5423681447eceab3a11ed2718e57858deb
-
-    getPosts();
-
-<<<<<<< HEAD
 
 
-const addComment = async (postId, comment) => {
-    // add the comment to the post
-    let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${postId}`, {
-        method: 'POST', 
-        headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            "text": comment
-        }),
-    });
-=======
-
-            let divThree=document.createElement('div')
-            document.body.appendChild(divThree)
-            divThree.innerText=res[i].user.username
-
-            let id=res[i].id
-
-            let commentInput=document.createElement('input')
-            document.body.appendChild(commentInput)
-            
-            let addCommentButton=document.createElement('button')
-            document.body.appendChild(addCommentButton)
-            addCommentButton.innerText="Add comment"
-            
-            
-            addCommentButton.addEventListener('click', async ()=>{
-                //let userToken= sessionStorage.getItem('token')
-                //console.log(`http://thesi.generalassemb.ly:8080/comment/${id}`)
-                let comment=commentInput.value
-                //console.log(comment)
-                let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
-    
-            method: 'POST',
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                "text" : comment
-            }),
-        
-            
-
-        });
-        console.log(comment)
-        //comment.save()
-        
-        fetch(`http://thesi.generalassemb.ly:8080/post/${id}/comment`)
-        .then(res => {
-            return res.json()
-            
-        })
-            .then(res=>{
-                console.log(res)
+        // get all the posts
+        fetch(`http://thesi.generalassemb.ly:8080/post/list`)
+                .then(res => {
+                    return res.json()
+                    
+                })
                 
-                for(let i=0; i<res.length; i++){
-                let divComment=document.createElement('div')
-                document.body.appendChild(divComment)
-                div.innerText=res[i].text
+                .then(res=>{
+                    //console.log(res)
+                for (let i=0; i< res.length; i++){
+                    // use the post id to get all the comments
+                    let postContainer = document.createElement('div');
+                    postContainer.className = 'container';
+                    document.body.appendChild(postContainer);
+
+                    let div=document.createElement('div')
+                    postContainer.appendChild(div)
+                    div.innerText=res[i].title
+
+                    let divThree=document.createElement('div')
+                    postContainer.appendChild(divThree)
+                    divThree.innerText=res[i].user.username
+                    
+                    
+                    let id=res[i].id
+                    
+                    // comment input field
+                    let commentInput=document.createElement('input')
+                    postContainer.appendChild(commentInput)
+                    
+                    // add comment button
+                    let addCommentButton=document.createElement('button')
+                    postContainer.appendChild(addCommentButton)
+                    addCommentButton.innerText="Add comment"
+                    
+                    let comment = getComments(res[i].id)
+                    .then(comment => {
+                        
+                        //console.log(comment);
+                        // main div
+                        
+                        
+                        
+                        
+                        
+                        let commentDiv = document.createElement('div');
+                        commentDiv.innerText = comment.length > 0 ? comment[0].text : 'Be the first to comment!';
+                        postContainer.appendChild(commentDiv);
+                    })
+                    
+                    
+                    
+                    addCommentButton.addEventListener('click', async ()=>{
+                        //let userToken= sessionStorage.getItem('token')
+                        //console.log(`http://thesi.generalassemb.ly:8080/comment/${id}`)
+                        let comment=commentInput.value
+                        //console.log(comment)
+                        let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
+            
+                        method: 'POST',
+                        headers: {
+                            Accept: 'application/json',
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            "text" : comment
+                        }),
                 
-                }
+                    
 
-})
-        
+                    });
+                    console.log(comment)
+                    //comment.save()
+                
+                        fetch(`http://thesi.generalassemb.ly:8080/post/${id}/comment`)
+                        .then(res => {
+                            return res.json()
+                            
+                        })
+                            .then(res=>{
+                                console.log(res)
+                                
+                                // for(let i=0; i<res.length; i++){
+                                // let divComment=document.createElement('div')
+                                // document.body.appendChild(divComment)
+                                // div.innerText=res[i].text
+                                
+                                // }
+
+                })
+                
+                    
+                    // let data= await response.json();
+                    // sessionStorage.setItem('token', data.userToken);
+
+            })
+                    
+
+                    
+
+                
+
+
+            // let responseData = await response.json();
+
+            // console.log(responseData);
             
-            // let data= await response.json();
-            // sessionStorage.setItem('token', data.userToken);
+            // return getPosts();
 
-    })
-            
+                };
+                })
 
-            
 
-        
-
->>>>>>> 6c5b9a5423681447eceab3a11ed2718e57858deb
-
-    let responseData = await response.json();
-
-    console.log(responseData);
-    
-    return getPosts();
-
-};
-
-// get comments by post Id
-const getComments = async (postId) => {
-    let response = await fetch(`http://thesi.generalassemb.ly:8080/post/${postId}/comment`);
-
-    let data = await response.json();
-
-    // if (data.length > 0) {
-    //     console.log(data);
-    //     return data.text;
-    // }
-
-    //console.log(data);
-
-    return 'Hello';
-}
