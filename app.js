@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // sign user out and clear the session token
     const logout = () => {
-        // clear the token from localStorage
+        // clear the token from sessionStorage
         localStorage.removeItem('token');
 
         // remove all the posts and show user the login/signup forms
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // check if there is a localStorage token, if so show the home page
     const confirmCredentials = () => {
-        if (localStorage.token) {
+        if (localStorage.getItem('token')) {
             hideLoginAndSignup();
             showPosts();
         };
@@ -101,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         localStorage.setItem('token', responseData.token);
+        
         //console.log(localStorage);
 
         //console.log(responseData);
@@ -114,6 +115,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Username already exists. Please try again.')
         }
     };
+
+
 
     const login = async () => {
         let data = {
@@ -136,6 +139,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let responseData = await response.json();
 
         localStorage.setItem('token', responseData.token);
+
+        //console.log(sessionStorage.token);
 
         // confirm the login was successful, then take user to posts page
         if (responseData.token) {
@@ -215,7 +220,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
                 .then(res=>{
                     //console.log(res)
-                    for (let i=0; i< res.length; i++){
+                    for (let i=res.length-1; i >= 0; i--){
                         // use the post id to get all the comments
                         let postContainer = document.createElement('div');
                         postContainer.id = 'post-container';
@@ -288,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 "description": postContent,
             }),
         })
+        .catch(err => console.log('Error creating new post: ', err));
         let data = await response.json();
         //.catch(err => console.log('Error creating new post: ', err));
 
@@ -298,3 +304,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // work on posting a comment, then delete comment
                 
 });
+
+
+//post post delete post
