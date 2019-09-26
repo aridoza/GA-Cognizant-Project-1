@@ -314,7 +314,6 @@ document.addEventListener('DOMContentLoaded', () => {
 					postContainer.id = 'post-container';
 					postContainer.className = 'container';
 					userPostsDiv.appendChild(postContainer);
-					//console.log(postContainer)
 
 					let divTitle = document.createElement('div');
 					postContainer.appendChild(divTitle);
@@ -330,42 +329,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
 					let deletePostButton = document.createElement('button');
 					deletePostButton.innerText = 'delete post';
-                    postContainer.appendChild(deletePostButton);
-                     
-                    let post_id=res[i].id
+					postContainer.appendChild(deletePostButton);
+
+					let post_id = res[i].id;
 
 					deletePostButton.addEventListener('click', function() {
-                    console.log(post_id)
+						console.log(post_id);
 						fetch(`http://thesi.generalassemb.ly:8080/post/${post_id}`, {
 							method: 'DELETE',
 							headers: {
 								Authorization: 'Bearer ' + localStorage.token,
 								'Content-Type': 'application/json'
-                            }
-                            
-                        }).then(res=>res.json())
-                        //console.log(res)
-                        
-    .then(res => {
-      //console.log('Deleted:', res.message)
-      return res
-    })
-    .catch(err => console.error(err))
+							}
+						})
+							.then((res) => res.json())
+							console.log(res)
 
-    let data = res.json()
-    return data
-                        // .then (responce =>
-                        //     response.json().then(json => {
-                        //         return json;
-                        //       })
-                        
-                        //.catch((err) => console.log('Error deleting a new post: ', err));
-                       
-                        
+							.then((res) => {
+								//console.log('Deleted:', res.message);
+								return res;
+							})
+							.catch((err) => console.error(err));
+
+						let data = res.json();
+						return data;
+						
 					});
 				}
 			});
 	});
 });
-
-
