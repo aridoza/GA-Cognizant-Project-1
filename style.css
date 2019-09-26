@@ -31,15 +31,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-<<<<<<< HEAD
-}
+} */
 
 #site-logo img{
     display: inline-block;
     width: 100px;
     height: 100px;
-=======
-} */
+} 
 .nav-bar{
     border: 2px solid red;
     display:flex;
@@ -73,5 +71,4 @@
     margin-top:15px;
     flex-direction: row-reverse;
     margin: auto 0;
->>>>>>> a77fb7b1f2175416515d8054609e8f116ba39d17
 }
