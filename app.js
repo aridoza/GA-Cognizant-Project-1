@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // sign user out and clear the session token
     const logout = () => {
         // clear the token from sessionStorage
-        sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
 
         document.querySelector('#all-posts').style.display = 'none';
         document.querySelector('#login-signup-container').style.display = 'inline-block';
@@ -58,11 +58,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // check if there is a sessionStorage token, if so show the home page
     const confirmCredentials = () => {
-        if (sessionStorage.token) {
+        if (localStorage.getItem('token')) {
             hideLoginAndSignup();
             showPosts();
         };
     };
+
+    confirmCredentials();
 
     // clear all login/signup fields 
     const clearLoginAndSignupFields = () => {
@@ -97,8 +99,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let responseData = await response.json();
 
 
-        sessionStorage.setItem('token', responseData.token);
-        //console.log(sessionStorage);
+        localStorage.setItem('token', responseData.token);
+        
+        //console.log(localStorage);
 
         //console.log(responseData);
         
@@ -110,6 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
             alert('Username already exists. Please try again.')
         }
     };
+
+
 
     const login = async () => {
         let data = {
@@ -130,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let responseData = await response.json();
 
-        sessionStorage.setItem('token', responseData.token);
+        localStorage.setItem('token', responseData.token);
 
         //console.log(sessionStorage.token);
 
@@ -190,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             .then(res=>{
                 //console.log(res)
-                for (let i=0; i< res.length; i++){
+                for (let i=res.length-1; i >= 0; i--){
                     // use the post id to get all the comments
                     let postContainer = document.createElement('div');
                     postContainer.className = 'container';
@@ -215,6 +220,17 @@ document.addEventListener('DOMContentLoaded', () => {
                     let addCommentButton=document.createElement('button')
                     postContainer.appendChild(addCommentButton)
                     addCommentButton.innerText="Add comment"
+
+
+
+                    // below should be added to get post by user s id call as well as deletePost
+                    let deleteCommentButton=document.createElement('button')
+                    postContainer.appendChild(deleteCommentButton)
+                    deleteCommentButton.innerText="Delete comment"
+
+
+
+
                     
                     let comment = getComments(res[i].id)
                     .then(comment => {
@@ -234,14 +250,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     
                     
                     addCommentButton.addEventListener('click', async ()=>{
-                        //let userToken= sessionStorage.getItem('token')
-                        //console.log(`http://thesi.generalassemb.ly:8080/comment/${id}`)
                         let comment=commentInput.value
-                        //console.log(comment)
                         let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
                             
                             method: 'POST',
                             headers: {
+                                //'Authorization': 'Bearer ' + sessionStorage.token,
                                 Accept: 'application/json',
                                 'Content-Type': 'application/json',
                             },
@@ -254,6 +268,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         });
                         console.log(comment)
                         //comment.save()
+
+                    deleteCommentButton.addEventListener('click', async()=>{
+                        let comment=commentInput.value
+                        let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`,{
+                            method: 'DELETE',
+                            headers: {
+                                //'Authorization': 'Bearer ' + sessionStorage.token,
+                            
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                "text" : comment
+                            }),
+                        })
+                        
+                    })
+
+                    // display all comments by post ID
                         
                         fetch(`http://thesi.generalassemb.ly:8080/post/${id}/comment`)
                         .then(res => {
@@ -313,10 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 "description": postContent,
             }),
         })
+        .catch(err => console.log('Error creating new post: ', err));
         let data = await response.json();
-        //.catch(err => console.log('Error creating new post: ', err));
-
-        return data;
+        
+    
+        //return data;
     })          
                 
 });
+
+
+//post post delete post
