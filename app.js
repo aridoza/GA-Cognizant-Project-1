@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // sign user out and clear the session token
     const logout = () => {
+        document.querySelector('#username-display').innerText = `Logged out`;
         // clear the token from sessionStorage
         localStorage.removeItem('token');
 
@@ -101,6 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
         localStorage.setItem('token', responseData.token);
+        localStorage.setItem('username', responseData.username);
         
         //console.log(localStorage);
 
@@ -108,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // confirm the signup was successful, then take user to posts page
         if (responseData.token) {
+            document.querySelector('#username-display').innerText = `Hello, ${localStorage.username}`;
             clearLoginAndSignupFields();
             confirmCredentials();
             addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
@@ -139,11 +142,13 @@ document.addEventListener('DOMContentLoaded', () => {
         let responseData = await response.json();
 
         localStorage.setItem('token', responseData.token);
+        localStorage.setItem('username', responseData.username);
 
         //console.log(sessionStorage.token);
 
         // confirm the login was successful, then take user to posts page
         if (responseData.token) {
+            document.querySelector('#username-display').innerText = `Hello, ${localStorage.username}`;
             clearLoginAndSignupFields();
             confirmCredentials();
             addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
@@ -302,6 +307,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     
     // work on posting a comment, then delete comment
+
+    // show comments on a post
+    
                 
 });
 
