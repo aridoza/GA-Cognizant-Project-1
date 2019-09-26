@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', (event) => {
+    event.preventDefault();
     // check if user is logged in
     const checkIfAlreadyLoggedIn = () => {
         if (localStorage.getItem('token')){
@@ -349,86 +350,92 @@ document.addEventListener('DOMContentLoaded', () => {
     })   
     
     
+    const showUserPosts = (profileBtn) => {
+        mainDiv.innerHTML = '';
+
+        if (profileBtn.innerText === 'Profile Content'){
+
+            profileButton.innerText = 'Go Back Home';
+    
+            fetch(`http://thesi.generalassemb.ly:8080/user/post`, {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.token,
+                    'Content-Type': 'application/json'
+                }
+            })
+    
+            .then((res) => {
+                return res.json();
+            })
+            .then((res) => {
+    
+    
+                for (let i = res.length - 1; i >= 0; i--) {
+                    //let userPostsDiv = document.getElementById('user-posts');
+    
+                    let postContainer = document.createElement('div');
+                    postContainer.id = 'post-container';
+                    postContainer.className = 'container';
+                    mainDiv.appendChild(postContainer);
+                    //console.log(postContainer)
+    
+                    let divTitle = document.createElement('div');
+                    postContainer.appendChild(divTitle);
+                    divTitle.innerText = res[i].title;
+    
+                    let divThree = document.createElement('div');
+                    postContainer.appendChild(divThree);
+                    divThree.innerText = res[i].description;
+    
+                    let div = document.createElement('div');
+                    div.innerText = res[i].user.username;
+                    mainDiv.appendChild(div);
+    
+                    let deletePostButton = document.createElement('button');
+                    deletePostButton.innerText = 'delete post';
+                    postContainer.appendChild(deletePostButton);
+    
+                    let post_id = res[i].id;
+    
+                    deletePostButton.addEventListener('click', function() {
+                        console.log(post_id);
+                        fetch(`http://thesi.generalassemb.ly:8080/post/${post_id}`, {
+                            method: 'DELETE',
+                            headers: {
+                                Authorization: 'Bearer ' + localStorage.token,
+                                'Content-Type': 'application/json'
+                            }
+                        })
+                            .then((res) => res.json())
+                            console.log(res)
+    
+                            .then((res) => {
+                                //console.log('Deleted:', res.message);
+                                return res;
+                            })
+                            .catch((err) => console.error(err));
+    
+                        let data = res.json();
+                        return data;
+                        
+                    });
+                    postContainer.appendChild(deletePostButton);
+                     
+    
+                }
+            });
+        } else {
+            getAllPosts();
+        }
+    };
     // work on posting a comment, then delete comment
 
     // show comments on a post
     
     // profile content
     const profileButton = document.querySelector('#profile-button');
-	profileButton.addEventListener('click', function(event) {
-        event.preventDefault();
-        mainDiv.innerHTML = '';
-
-
-
-		fetch(`http://thesi.generalassemb.ly:8080/user/post`, {
-			method: 'GET',
-			headers: {
-				Authorization: 'Bearer ' + localStorage.token,
-				'Content-Type': 'application/json'
-			}
-		})
-			.then((res) => {
-				return res.json();
-			})
-			.then((res) => {
-
-
-				for (let i = res.length - 1; i >= 0; i--) {
-					//let userPostsDiv = document.getElementById('user-posts');
-
-					let postContainer = document.createElement('div');
-					postContainer.id = 'post-container';
-					postContainer.className = 'container';
-					mainDiv.appendChild(postContainer);
-					//console.log(postContainer)
-
-					let divTitle = document.createElement('div');
-					postContainer.appendChild(divTitle);
-					divTitle.innerText = res[i].title;
-
-					let divThree = document.createElement('div');
-					postContainer.appendChild(divThree);
-					divThree.innerText = res[i].description;
-
-					let div = document.createElement('div');
-					div.innerText = res[i].user.username;
-					mainDiv.appendChild(div);
-
-					let deletePostButton = document.createElement('button');
-					deletePostButton.innerText = 'delete post';
-					postContainer.appendChild(deletePostButton);
-
-					let post_id = res[i].id;
-
-					deletePostButton.addEventListener('click', function() {
-						console.log(post_id);
-						fetch(`http://thesi.generalassemb.ly:8080/post/${post_id}`, {
-							method: 'DELETE',
-							headers: {
-								Authorization: 'Bearer ' + localStorage.token,
-								'Content-Type': 'application/json'
-							}
-						})
-							.then((res) => res.json())
-							console.log(res)
-
-							.then((res) => {
-								//console.log('Deleted:', res.message);
-								return res;
-							})
-							.catch((err) => console.error(err));
-
-						let data = res.json();
-						return data;
-						
-					});
-                    postContainer.appendChild(deletePostButton);
-                     
-
-				}
-			});
-    });
+	profileButton.addEventListener('click', () => showUserPosts(profileButton));
     
     // delete a comment
     const deleteComment = async (comment_id) => {
