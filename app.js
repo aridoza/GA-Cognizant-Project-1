@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     checkIfAlreadyLoggedIn();
 
+    // site logo image
+    const mainLogo = document.querySelector('#site-logo')
+
     // Login Container
     const loginDiv = document.querySelector('#login-div');
 
@@ -321,6 +324,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
 
             getAllPosts();
+
+            // show all posts if user clicks main logo
+    // mainLogo.addEventListener('click', () => getAllPosts());
 
     const newPostTitle = document.querySelector('#new-post-title');
     const newPostContent = document.querySelector('#new-post-content');

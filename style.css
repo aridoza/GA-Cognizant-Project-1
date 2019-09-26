@@ -29,7 +29,12 @@
 
 input {
     display: flex;
-    margin: 10px;
     align-items: center;
     justify-content: center;
+}
+
+#site-logo img{
+    display: inline-block;
+    width: 100px;
+    height: 100px;
 }
