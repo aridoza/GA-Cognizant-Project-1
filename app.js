@@ -269,20 +269,41 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         let div=document.createElement('div')
                         postContainer.appendChild(div)
                         div.innerText=res[i].title
+                        div.style.color="#1995AD"
+                        div.style.fontSize="30px";
+                        div.style.fontWeight = "900"
+                        div.style.fontFamily="Noto Sans TC"
                         
                         let divThree=document.createElement('div')
                         postContainer.appendChild(divThree)
-                        divThree.innerText=res[i].user.username
+                        divThree.innerText=(`Made by: ${res[i].user.username}`)
+                        divThree.style.fontSize="15px"
+                        divThree.style.fontStyle="oblique";
+                        
+
+
+                        let divFour=document.createElement('div')
+                        postContainer.appendChild(divFour)
+                        divFour.innerText=res[i].description
+                        divFour.style.fontSize="20px"
+                        divFour.style.marginBottom="10px"
 
                         // input field to add comment
                         let addCommentInput = document.createElement('input');
                         postContainer.appendChild(addCommentInput);
+                        addCommentInput.style.width="250px"
+                        addCommentInput.style.height="30px"
+                        addCommentInput.style.marginRight="15px"
+                        addCommentInput.style.marginBottom="20px"
+
+
 
                         // add comment button
                         let addCommentButton=document.createElement('button');
                         addCommentButton.className = 'btn btn-primary';
                         addCommentButton.innerText="Add comment";
                         postContainer.appendChild(addCommentButton);
+                        addCommentButton.style.marginRight="30px"
 
                         addCommentButton.addEventListener('click', () => newCommentHandler(res[i].id, addCommentInput.value));
 
@@ -399,7 +420,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
                     let div = document.createElement('div');
                     div.innerText = res[i].user.username;
-                    mainDiv.appendChild(div);
+                    postContainer.appendChild(div);
     
                     let deletePostButton = document.createElement('button');
                     deletePostButton.innerText = 'delete post';

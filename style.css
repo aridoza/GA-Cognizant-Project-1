@@ -23,8 +23,12 @@
     min-width: 80vw;
     min-height: 20vh;
     text-align: center;
-    border: 2px solid black;
-    margin-top: 10px;
+    box-shadow: 0 4px 8px 0 rgba(131, 80, 80, 0.7);
+    transition: 0.3s;
+    border-radius: 5px;
+    margin-top: 20px;
+    background-color: #A1D6E2;
+    
 }
 
 /* input {
@@ -51,8 +55,9 @@
     margin: 10px;
     padding: 10px;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,0.7);
-  transition: 0.3s;
-  border-radius: 5px;
+    transition: 0.3s;
+    border-radius: 5px;
+    
 }
 #new-post-button{
     margin:5px;
