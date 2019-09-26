@@ -36,9 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // sign user out and clear the session token
     const logout = () => {
-        // clear the token from sessionStorage
-        sessionStorage.removeItem('token');
+        // clear the token from localStorage
+        localStorage.removeItem('token');
 
+        // remove all the posts and show user the login/signup forms
         document.querySelector('#all-posts').style.display = 'none';
         document.querySelector('#login-signup-container').style.display = 'inline-block';
     };
@@ -56,13 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
         loginDiv.style.display = 'inline-block';
     });
 
-    // check if there is a sessionStorage token, if so show the home page
+    // check if there is a localStorage token, if so show the home page
     const confirmCredentials = () => {
-        if (sessionStorage.token) {
+        if (localStorage.token) {
             hideLoginAndSignup();
             showPosts();
         };
     };
+
+    confirmCredentials();
 
     // clear all login/signup fields 
     const clearLoginAndSignupFields = () => {
@@ -97,8 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
         let responseData = await response.json();
 
 
-        sessionStorage.setItem('token', responseData.token);
-        //console.log(sessionStorage);
+        localStorage.setItem('token', responseData.token);
+        //console.log(localStorage);
 
         //console.log(responseData);
         
@@ -106,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (responseData.token) {
             clearLoginAndSignupFields();
             confirmCredentials();
+            addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
         } else {
             alert('Username already exists. Please try again.')
         }
@@ -131,20 +135,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
         let responseData = await response.json();
 
-        sessionStorage.setItem('token', responseData.token);
-
-        //console.log(sessionStorage.token);
+        localStorage.setItem('token', responseData.token);
 
         // confirm the login was successful, then take user to posts page
         if (responseData.token) {
             clearLoginAndSignupFields();
             confirmCredentials();
+            addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
         } else {
             alert('Login failed. Please try again.')
         }
     }
 
-    // create a new user, store token in sessionStorage, and show the home page
+    // create a new user, store token in localStorage, and show the home page
     signupBtn.addEventListener('click', () => addNewUser());
 
     // log user in
@@ -159,116 +162,111 @@ document.addEventListener('DOMContentLoaded', () => {
         let response = await fetch(`http://thesi.generalassemb.ly:8080/post/${postId}/comment`);
         
         let data = await response.json();
+        return data;
+    };
+
+    // show the add comment input and the 'add comment' button - only show when user is logged in
+    const addCommentContentIfLoggedIn = (divToAppendTo) => {
+        // comment input field
+        let commentInput=document.createElement('input');
+        divToAppendTo.appendChild(commentInput);
         
-        //return data.text;
         
-        
-        // need the post.title
-        // post.description
-        // post.user.username
-        // comments
-        // if (data.length > 0) {
-            //     console.log(data);
-            //     return data.map(comment => comment.text);
-            // } else {
-                //     return 'No comments yet!';
-                // }
+        // add comment button
+        let addCommentButton=document.createElement('button');
+        addCommentButton.className = 'btn btn-primary';
+        addCommentButton.innerText="Add comment";
+        divToAppendTo.appendChild(addCommentButton);
+
+        addCommentButton.addEventListener('click', async ()=>{
+            //let userToken= localStorage.getItem('token')
+            //console.log(`http://thesi.generalassemb.ly:8080/comment/${id}`)
+            let comment=commentInput.value
+            //console.log(comment)
+            let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
                 
-                return data;
+                method: 'POST',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.token,
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "text" : comment
+                }),
                 
-                //console.log(data);
                 
-                //return 'Hello';
-            }
+                
+            });
+            console.log(comment)
+            //comment.save()
+
+            getComments(id);
+                
+            })
+    };
             
             
             // get all the posts
-            fetch(`http://thesi.generalassemb.ly:8080/post/list`)
-            .then(res => {
-                return res.json()              
-            })
-            .then(res=>{
-                //console.log(res)
-                for (let i=0; i< res.length; i++){
-                    // use the post id to get all the comments
-                    let postContainer = document.createElement('div');
-                    postContainer.className = 'container';
-                    document.body.appendChild(postContainer);
-                    
-                    let div=document.createElement('div')
-                    postContainer.appendChild(div)
-                    div.innerText=res[i].title
-                    
-                    let divThree=document.createElement('div')
-                    postContainer.appendChild(divThree)
-                    divThree.innerText=res[i].user.username
-                    
-                    
-                    let id=res[i].id
-                    
-                    // comment input field
-                    let commentInput=document.createElement('input')
-                    postContainer.appendChild(commentInput)
-                    
-                    // add comment button
-                    let addCommentButton=document.createElement('button')
-                    postContainer.appendChild(addCommentButton)
-                    addCommentButton.innerText="Add comment"
-                    
-                    let comment = getComments(res[i].id)
-                    .then(comment => {
-                        
-                        //console.log(comment);
-                        // main div
-                        
-                        
-                        
-                        
-                        
-                        let commentDiv = document.createElement('div');
-                        commentDiv.innerText = comment.length > 0 ? comment[0].text : 'Be the first to comment!';
-                        postContainer.appendChild(commentDiv);
-                    })
-                    
-                    
-                    
-                    addCommentButton.addEventListener('click', async ()=>{
-                        //let userToken= sessionStorage.getItem('token')
-                        //console.log(`http://thesi.generalassemb.ly:8080/comment/${id}`)
-                        let comment=commentInput.value
-                        //console.log(comment)
-                        let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
-                            
-                            method: 'POST',
-                            headers: {
-                                Authorization: 'Bearer ' + sessionStorage.token,
-                                Accept: 'application/json',
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({
-                                "text" : comment
-                            }),
-                            
-                            
-                            
-                        });
-                        console.log(comment)
-                        //comment.save()
-                        
-                        fetch(`http://thesi.generalassemb.ly:8080/post/${id}/comment`)
-                        .then(res => {
-                            return res.json()
-                            
-                        })
-                        .then(res=>{
-                            console.log(res)
-                                
-                            })
-                            
-                        })
-                        
-                    };
+            const getAllPosts = () => {
+                fetch(`http://thesi.generalassemb.ly:8080/post/list`)
+                .then(res => {
+                    return res.json()              
                 })
+                .then(res=>{
+                    //console.log(res)
+                    for (let i=0; i< res.length; i++){
+                        // use the post id to get all the comments
+                        let postContainer = document.createElement('div');
+                        postContainer.id = 'post-container';
+                        postContainer.className = 'container';
+                        document.body.appendChild(postContainer);
+                        
+                        let div=document.createElement('div')
+                        postContainer.appendChild(div)
+                        div.innerText=res[i].title
+                        
+                        let divThree=document.createElement('div')
+                        postContainer.appendChild(divThree)
+                        divThree.innerText=res[i].user.username
+                        
+                        
+                        let id=res[i].id
+
+                        // wrap this in a conditional to only display if the user is logged in (localStorage)
+                        // if not, show the comments but have a message like 'you must be logged in to add a comment'
+
+                        // comments container below post
+                        let commentsContainer = document.createElement('div');
+                        commentsContainer.className = 'container';
+                        commentsContainer.id = 'comments-container';
+
+                        // localStorage.token !== '' 
+                        //     ? console.log('not logged in')
+                        //     : console.log('logged in '); 
+                        
+
+                       
+                        
+                        let comment = getComments(res[i].id)
+                        .then(comment => {
+                            console.log('')              
+                            let commentDiv = document.createElement('div');
+                            // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
+                            commentDiv.innerText = comment.length > 0 
+                                ? comment.map(item => `${item.user.username}: ${item.text}`) 
+                                : localStorage === '' ? 'You must login to add a comment' : 'Be the first to comment!';
+                            commentsContainer.appendChild(commentDiv);
+
+                            postContainer.appendChild(commentsContainer);
+                        })
+                            
+                        };
+                    })
+                
+            }
+
+            getAllPosts();
 
     const newPostTitle = document.querySelector('#new-post-title');
     const newPostContent = document.querySelector('#new-post-content');
@@ -281,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let response = await fetch('http://thesi.generalassemb.ly:8080/post', {
             method: 'POST',
             headers: {
-                'Authorization': 'Bearer ' + sessionStorage.token,
+                'Authorization': 'Bearer ' + localStorage.token,
                 Accept: 'application/json',
                 'Content-Type': 'application/json',
             },
@@ -294,6 +292,9 @@ document.addEventListener('DOMContentLoaded', () => {
         //.catch(err => console.log('Error creating new post: ', err));
 
         return data;
-    })          
+    })   
+    
+    
+    // work on posting a comment, then delete comment
                 
 });
