@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         mainDiv.innerHTML = '';
 
-        
+
 
 		fetch(`http://thesi.generalassemb.ly:8080/user/post`, {
 			method: 'GET',
@@ -397,21 +397,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
 					let deletePostButton = document.createElement('button');
 					deletePostButton.innerText = 'delete post';
-                    
-                    let post_id=res[i].id
-                    
-                    deletePostButton.addEventListener('click', async () => {
-                    console.log(post_id)
-						let response = await fetch(`http://thesi.generalassemb.ly:8080/post/${post_id}`, {
-							method: 'delete',
+					postContainer.appendChild(deletePostButton);
+
+					let post_id = res[i].id;
+
+					deletePostButton.addEventListener('click', function() {
+						console.log(post_id);
+						fetch(`http://thesi.generalassemb.ly:8080/post/${post_id}`, {
+							method: 'DELETE',
 							headers: {
 								Authorization: 'Bearer ' + localStorage.token,
 								'Content-Type': 'application/json'
-                            }
-                            
-                        })
-                        console.log(response);
-                        
+							}
+						})
+							.then((res) => res.json())
+							console.log(res)
+
+							.then((res) => {
+								//console.log('Deleted:', res.message);
+								return res;
+							})
+							.catch((err) => console.error(err));
+
+						let data = res.json();
+						return data;
+						
 					});
                     postContainer.appendChild(deletePostButton);
                      
@@ -492,5 +502,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 
 });
-
-
