@@ -30,8 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // Show signup button
     const showLoginBtn = document.querySelector('#show-login');
 
+    // Home button
+    const homeBtn = document.createElement('button');
+
+
     // All posts Div
     const postsDiv = document.querySelector('#all-posts');
+
+    // Main div below nav
+    let mainDiv = document.querySelector('#main-content');
 
     // show all posts
     const showPosts = () => {
@@ -243,13 +250,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     return res.json()              
                 })
                 .then(res=>{
+                    
                     //console.log(res)
                     for (let i=res.length-1; i >= 0; i--){
                         // use the post id to get all the comments
                         let postContainer = document.createElement('div');
                         postContainer.id = 'post-container';
                         postContainer.className = 'container';
-                        document.body.appendChild(postContainer);
+                        mainDiv.appendChild(postContainer);
                         
                         let div=document.createElement('div')
                         postContainer.appendChild(div)
@@ -348,7 +356,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // profile content
     const profileButton = document.querySelector('#profile-button');
 	profileButton.addEventListener('click', function(event) {
-		event.preventDefault();
+        event.preventDefault();
+        mainDiv.innerHTML = '';
+
+        
 
 		fetch(`http://thesi.generalassemb.ly:8080/user/post`, {
 			method: 'GET',
@@ -361,15 +372,15 @@ document.addEventListener('DOMContentLoaded', () => {
 				return res.json();
 			})
 			.then((res) => {
-				console.log(res);
+
 
 				for (let i = res.length - 1; i >= 0; i--) {
-					let userPostsDiv = document.getElementById('user-posts');
+					//let userPostsDiv = document.getElementById('user-posts');
 
 					let postContainer = document.createElement('div');
 					postContainer.id = 'post-container';
 					postContainer.className = 'container';
-					userPostsDiv.appendChild(postContainer);
+					mainDiv.appendChild(postContainer);
 					//console.log(postContainer)
 
 					let divTitle = document.createElement('div');
@@ -382,43 +393,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
 					let div = document.createElement('div');
 					div.innerText = res[i].user.username;
-					document.body.appendChild(div);
+					mainDiv.appendChild(div);
 
 					let deletePostButton = document.createElement('button');
 					deletePostButton.innerText = 'delete post';
-                    postContainer.appendChild(deletePostButton);
-                     
+                    
                     let post_id=res[i].id
-
-					deletePostButton.addEventListener('click', function() {
+                    
+                    deletePostButton.addEventListener('click', async () => {
                     console.log(post_id)
-						fetch(`http://thesi.generalassemb.ly:8080/post/${post_id}`, {
-							method: 'DELETE',
+						let response = await fetch(`http://thesi.generalassemb.ly:8080/post/${post_id}`, {
+							method: 'delete',
 							headers: {
 								Authorization: 'Bearer ' + localStorage.token,
 								'Content-Type': 'application/json'
                             }
                             
-                        }).then(res=>res.json())
-                        //console.log(res)
-                        
-    .then(res => {
-      //console.log('Deleted:', res.message)
-      return res
-    })
-    .catch(err => console.error(err))
-
-    let data = res.json()
-    return data
-                        // .then (responce =>
-                        //     response.json().then(json => {
-                        //         return json;
-                        //       })
-                        
-                        //.catch((err) => console.log('Error deleting a new post: ', err));
-                       
+                        })
+                        console.log(response);
                         
 					});
+                    postContainer.appendChild(deletePostButton);
+                     
+
 				}
 			});
     });
@@ -450,13 +447,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         let data = await response.json();
 
-        for (let i = 0; i < data.length; i++) {
-            let userCommentsDiv = document.getElementById('user-comments');
+        mainDiv.innerHTML = '';
 
+        for (let i = 0; i < data.length; i++) {
             let commentsContainer = document.createElement('div');
             commentsContainer.id = 'post-container';
             commentsContainer.className = 'container';
-            userCommentsDiv.appendChild(commentsContainer);
+            mainDiv.appendChild(commentsContainer);
             //console.log(postContainer)
 
             let divTitle = document.createElement('div');
@@ -474,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let div = document.createElement('div');
             div.innerText = data[i].user.username;
-            document.body.appendChild(div);
+            mainDiv.appendChild(div);
 
             let deleteCommentButton = document.createElement('button');
             deleteCommentButton.className = 'btn btn-primary';
@@ -485,6 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
             let post_id=data[i].id
         }
     });
+
+    // return user to home page and show all posts (only show home button when user is logged in)
+    // idea: make a div below the nav that would show content depending on what button the user presses?
+    const showHomeContent = () => {
+        mainDiv.innerHTML = '';
+        getAllPosts();
+    }
 
                 
 });

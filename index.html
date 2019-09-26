@@ -40,7 +40,7 @@
 
         <!-- Logged-in Content -->
         <div id="all-posts" class="container">
-            <h2 id="posts-header">Latest Posts</h2>
+            <h2 id="posts-header">PostFeed</h2>
             <button id="logout-btn" class="btn btn-primary">Log Out</button>
             <div class="container">
                 <input id="new-post-title" type="text" placeholder="Post title">
@@ -50,20 +50,21 @@
                 <div id="user-comments"></div>
             </div>
 
+            <!-- Profile Content -->
+            <div id="user-profile" class="container">
+                <div class="container">
+                    <button id="profile-button" class="btn btn-primary">Profile Content</button>
+                    <button id="comments-button" class="btn btn-primary">My Comments</button>
+                    <div id="username-display">Logged out</div>
+                </div>
+    
+            </div>
             
+            <!-- ###All dynamic content goes below### -->
+            <div id="main-content" class="container"></div>
             <!-- End of logged-in container -->
         </div>
        
-        <!-- Profile Content  - put back in logged-in content container when API is back up!!!-->
-        <div id="user-profile" class="container">
-            <div class="container">
-                <button class="btn btn-primary">Home</button>
-                <button id="profile-button" class="btn btn-primary">Profile Content</button>
-                <button id="comments-button" class="btn btn-primary">My Comments</button>
-                <div id="username-display">Logged out</div>
-            </div>
-
-            </div>
         </div>
 
     <!-- End of main container -->
