@@ -46,6 +46,8 @@
                 <input id="new-post-title" type="text" placeholder="Post title">
                 <input id="new-post-content" type="text" placeholder="Add a new post...">
                 <button id="new-post-button" class="btn btn-primary">Create Post</button>
+                <div id="user-posts"></div>
+                <div id="user-comments"></div>
             </div>
 
             
@@ -55,8 +57,9 @@
         <!-- Profile Content  - put back in logged-in content container when API is back up!!!-->
         <div id="user-profile" class="container">
             <div class="container">
-                <button>Home</button>
-                <div>Profile Content</div>
+                <button class="btn btn-primary">Home</button>
+                <button id="profile-button" class="btn btn-primary">Profile Content</button>
+                <button id="comments-button" class="btn btn-primary">My Comments</button>
                 <div id="username-display">Logged out</div>
             </div>
 
