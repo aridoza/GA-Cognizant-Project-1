@@ -199,6 +199,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // check if user is logged in to add comments
     const newCommentHandler = async (id, comment) => {
+        if (comment.value === '') {
+            return alert("Error: Your comment was blank. Don't be shy!");
+        }
         if (localStorage.getItem('token')){
             let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
                 
@@ -209,12 +212,19 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    "text" : comment
+                    "text" : comment.value
                 }),   
                 
             });
+
+            if (response.status === 200) {
+                comment.value = '';
+                alert('Successfully added comment!');
+                return getComments(id);
+            } else {
+                alert("Sorry, we couldn't add your comment. Please try again");
+            }
     
-            getComments(id);
         } else {
             return alert('You must be signed in to add a comment');
         }
@@ -222,31 +232,40 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
     // show all comments for a post
     const showPostComments = async (divToAppendTo, postId) => {
-        let commentBtnId = document.querySelector(`#post-${postId}`)
-        commentBtnId.style.display = 'none';
-        let showBtn = document.querySelector(`post-${postId}`);
-        let postComments = await getComments(postId);
-        let commentsContainer = document.createElement('div');
-        commentsContainer.className = 'container';
+        let commentBtn = document.querySelector(`#post-${postId}`);
+        if (commentBtn.innerText === "Show Comments") {
+            commentBtn.innerText = "Hide Comments";
 
-        
-        
-        // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
-        commentsContainer.innerText = postComments.length > 0 
-        ? postComments.map(item => `${item.user.username}: ${item.text}`) 
-        : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
-        
-        let hideCommentsButton = document.createElement('button');
-        hideCommentsButton.className = 'btn btn-primary';
-        hideCommentsButton.innerText = 'Hide Comments';
-        commentsContainer.appendChild(hideCommentsButton);
-        hideCommentsButton.addEventListener('click', () => {
-            commentBtnId.style.display = 'inline-block';
+            //commentBtnId.style.display = 'none';
+            //let showBtn = document.querySelector(`post-${postId}`);
+            let postComments = await getComments(postId);
+            let commentsContainer = document.createElement('div');
+            commentsContainer.className = 'container';
+    
+            
+            
+            // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
+            commentsContainer.innerText = postComments.length > 0 
+            ? postComments.map(item => `${item.user.username}: ${item.text}`) 
+            : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
+            
+            // let hideCommentsButton = document.createElement('button');
+            // hideCommentsButton.className = 'btn btn-primary';
+            // hideCommentsButton.innerText = 'Hide Comments';
+            //commentsContainer.appendChild(hideCommentsButton);
+            // hideCommentsButton.addEventListener('click', () => {
+            //     commentBtnId.style.display = 'inline-block';
+            //     divToAppendTo.innerHTML = '';
+            // })
+            
+    
+            divToAppendTo.appendChild(commentsContainer);
+        } else {
+            commentBtn.innerText = "Show Comments";
             divToAppendTo.innerHTML = '';
-        })
-        
+        }
 
-        divToAppendTo.appendChild(commentsContainer);
+
     };
 
 
@@ -305,7 +324,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         postContainer.appendChild(addCommentButton);
                         addCommentButton.style.marginRight="30px"
 
-                        addCommentButton.addEventListener('click', () => newCommentHandler(res[i].id, addCommentInput.value));
+                        addCommentButton.addEventListener('click', () => newCommentHandler(res[i].id, addCommentInput));
 
                         // show all comments button
                         let showCommentsButton = document.createElement('button');
@@ -318,30 +337,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         let commentsContainer = document.createElement('div');
                         commentsContainer.id = 'comments-container';
                         postContainer.appendChild(commentsContainer);
-
-                        // store the comments to display later
-                        // let comments = getComments(res[i].id)
-                            //console.log(comments);
                             
-                            // display a single post if it's clicked on
-                            showCommentsButton.addEventListener('click', () => showPostComments(commentsContainer, res[i].id));
-                            
-                            
-                            let id=res[i].id
-    
-                            // wrap this in a conditional to only display if the user is logged in (localStorage)
-                            // if not, show the comments but have a message like 'you must be logged in to add a comment'
-    
-                            // comments container below post
-                            // let commentsContainer = document.createElement('div');
-                            // commentsContainer.className = 'container';
-                            // commentsContainer.id = 'comments-container';
-    
-                            // localStorage.token !== '' 
-                            //     ? console.log('not logged in')
-                            //     : console.log('logged in '); 
-
-                            
+                        // display a single post if it's clicked on
+                        showCommentsButton.addEventListener('click', () => showPostComments(commentsContainer, res[i].id));   
+                        
+                        let id=res[i].id
                         };
                     })
                 
@@ -359,6 +359,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
     newPostButton.addEventListener('click', async () => {
         let postTitle = newPostTitle.value;
         let postContent = newPostContent.value;
+
+        if (postTitle.innerText === '' || postContent === '') {
+            return alert("Error: Please make sure you add both a title and a body to your post");
+        }
 
         let response = await fetch('http://thesi.generalassemb.ly:8080/post', {
             method: 'POST',
@@ -456,8 +460,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
             });
         } else {
-            profileBtn.innerText="Profile content"
-            getAllPosts();
+            profileBtn.innerText="Profile Content";
+            return getAllPosts();
         }
     };
     // work on posting a comment, then delete comment
@@ -526,10 +530,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 commentsContainer.appendChild(commentDiv);
                 commentDiv.innerText = `${data[i].user.username}: ${data[i].text}`;
         
-                let div = document.createElement('div');
-                div.innerText = data[i].user.username;
-                mainDiv.appendChild(div);
-        
                 let deleteCommentButton = document.createElement('button');
                 deleteCommentButton.className = 'btn btn-primary';
                 deleteCommentButton.innerText = 'delete comment';
@@ -538,7 +538,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }
         } else {
             showCommentsBtn.innerText = 'My Comments';
-            getAllPosts();
+            return getAllPosts();
         };
 
 
