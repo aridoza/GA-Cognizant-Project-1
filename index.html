@@ -41,25 +41,28 @@
 
         <!-- Logged-in Content -->
         <div id="all-posts" class="container">
-            <div id="site-logo"><img src="public/PostFeed.png"></div>
-            <button id="logout-btn" class="btn btn-primary">Log Out</button>
-            <div class="container">
-                <input id="new-post-title" type="text" placeholder="Post title">
-                <input id="new-post-content" type="text" placeholder="Add a new post...">
+           
+            <!-- <button id="logout-btn" class="btn btn-primary">Log Out</button> -->
+            <!-- Profile Content -->
+            <div id="user-profile" class="container nav-bar">
+                <h2 id="posts-header">PostFeed</h2>
+                <div class="container top-buttons">
+                    <button id="profile-button" class="btn btn-primary">Profile Content</button>
+                    <button id="comments-button" class="btn btn-primary">My Comments</button>
+                    <button id="logout-btn" class="btn btn-primary">Log Out</button>
+                    <div id="username-display">Logged out</div>
+                </div>
+    
+            </div>
+            <div class="container new-post-container">
+                <input class="form-control"  type="text" placeholder="Post title">
+                <textarea class="form-control" type="text" placeholder="Add a new post..." rows="3"></textarea>
                 <button id="new-post-button" class="btn btn-primary">Create Post</button>
                 <div id="user-posts"></div>
                 <div id="user-comments"></div>
             </div>
 
-            <!-- Profile Content -->
-            <div id="user-profile" class="container">
-                <div class="container">
-                    <button id="profile-button" class="btn btn-primary">Profile Content</button>
-                    <button id="comments-button" class="btn btn-primary">My Comments</button>
-                    <div id="username-display">Logged out</div>
-                </div>
-    
-            </div>
+           
             
             <!-- ###All dynamic content goes below### -->
             <div id="main-content" class="container"></div>
