@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
 
-
+    // login existing user
     const login = async () => {
         let data = {
             email: document.querySelector('#login-email').value,
@@ -151,7 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('#username-display').innerText = `Hello, ${localStorage.username}`;
             clearLoginAndSignupFields();
             confirmCredentials();
-            addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
         } else {
             alert('Login failed. Please try again.')
         }
@@ -175,24 +174,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     };
 
-    // show the add comment input and the 'add comment' button - only show when user is logged in
-    const addCommentContentIfLoggedIn = (divToAppendTo) => {
-        // comment input field
-        let commentInput=document.createElement('input');
-        divToAppendTo.appendChild(commentInput);
-        
-        
-        // add comment button
-        let addCommentButton=document.createElement('button');
-        addCommentButton.className = 'btn btn-primary';
-        addCommentButton.innerText="Add comment";
-        divToAppendTo.appendChild(addCommentButton);
-
-        addCommentButton.addEventListener('click', async ()=>{
-            //let userToken= localStorage.getItem('token')
-            //console.log(`http://thesi.generalassemb.ly:8080/comment/${id}`)
-            let comment=commentInput.value
-            //console.log(comment)
+    // check if user is logged in to add comments
+    const newCommentHandler = async (id, comment) => {
+        if (localStorage.getItem('token')){
             let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
                 
                 method: 'POST',
@@ -203,20 +187,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({
                     "text" : comment
-                }),
-                
-                
+                }),   
                 
             });
-            console.log(comment)
-            //comment.save()
-
+    
             getComments(id);
-                
-            })
+        } else {
+            return alert('You must be signed in to add a comment');
+        }
+    }
+    
+    // show all comments for a post
+    const showPostComments = async (divToAppendTo, postId) => {
+        let commentBtnId = document.querySelector(`#post-${postId}`)
+        commentBtnId.style.display = 'none';
+        let showBtn = document.querySelector(`post-${postId}`);
+        let postComments = await getComments(postId);
+        let commentsContainer = document.createElement('div');
+        commentsContainer.className = 'container';
+
+        
+        
+        // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
+        commentsContainer.innerText = postComments.length > 0 
+        ? postComments.map(item => `${item.user.username}: ${item.text}`) 
+        : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
+        
+        let hideCommentsButton = document.createElement('button');
+        hideCommentsButton.className = 'btn btn-primary';
+        hideCommentsButton.innerText = 'Hide Comments';
+        commentsContainer.appendChild(hideCommentsButton);
+        hideCommentsButton.addEventListener('click', () => {
+            commentBtnId.style.display = 'inline-block';
+            divToAppendTo.innerHTML = '';
+        })
+        
+
+        divToAppendTo.appendChild(commentsContainer);
     };
-            
-            
+
+
             // get all the posts
             const getAllPosts = () => {
                 fetch(`http://thesi.generalassemb.ly:8080/post/list`)
@@ -239,37 +249,53 @@ document.addEventListener('DOMContentLoaded', () => {
                         let divThree=document.createElement('div')
                         postContainer.appendChild(divThree)
                         divThree.innerText=res[i].user.username
-                        
-                        
-                        let id=res[i].id
 
-                        // wrap this in a conditional to only display if the user is logged in (localStorage)
-                        // if not, show the comments but have a message like 'you must be logged in to add a comment'
+                        // input field to add comment
+                        let addCommentInput = document.createElement('input');
+                        postContainer.appendChild(addCommentInput);
 
-                        // comments container below post
+                        // add comment button
+                        let addCommentButton=document.createElement('button');
+                        addCommentButton.className = 'btn btn-primary';
+                        addCommentButton.innerText="Add comment";
+                        postContainer.appendChild(addCommentButton);
+
+                        addCommentButton.addEventListener('click', () => newCommentHandler(res[i].id, addCommentInput.value));
+
+                        // show all comments button
+                        let showCommentsButton = document.createElement('button');
+                        showCommentsButton.className = 'btn btn-primary';
+                        showCommentsButton.id = 'post-' + res[i].id;
+
+                        showCommentsButton.innerText = 'Show Comments';
+                        postContainer.appendChild(showCommentsButton);
+
                         let commentsContainer = document.createElement('div');
-                        commentsContainer.className = 'container';
                         commentsContainer.id = 'comments-container';
+                        postContainer.appendChild(commentsContainer);
 
-                        // localStorage.token !== '' 
-                        //     ? console.log('not logged in')
-                        //     : console.log('logged in '); 
-                        
+                        // store the comments to display later
+                        // let comments = getComments(res[i].id)
+                            //console.log(comments);
+                            
+                            // display a single post if it's clicked on
+                            showCommentsButton.addEventListener('click', () => showPostComments(commentsContainer, res[i].id));
+                            
+                            
+                            let id=res[i].id
+    
+                            // wrap this in a conditional to only display if the user is logged in (localStorage)
+                            // if not, show the comments but have a message like 'you must be logged in to add a comment'
+    
+                            // comments container below post
+                            // let commentsContainer = document.createElement('div');
+                            // commentsContainer.className = 'container';
+                            // commentsContainer.id = 'comments-container';
+    
+                            // localStorage.token !== '' 
+                            //     ? console.log('not logged in')
+                            //     : console.log('logged in '); 
 
-                       
-                        
-                        let comment = getComments(res[i].id)
-                        .then(comment => {
-                            console.log('')              
-                            let commentDiv = document.createElement('div');
-                            // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
-                            commentDiv.innerText = comment.length > 0 
-                                ? comment.map(item => `${item.user.username}: ${item.text}`) 
-                                : localStorage === '' ? 'You must login to add a comment' : 'Be the first to comment!';
-                            commentsContainer.appendChild(commentDiv);
-
-                            postContainer.appendChild(commentsContainer);
-                        })
                             
                         };
                     })
