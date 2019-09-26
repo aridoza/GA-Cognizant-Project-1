@@ -160,6 +160,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
+        let userName= localStorage.username
+        userName.setAttibure('#user-name')
+        console.log(userName)
 
         //console.log(sessionStorage.token);
 
@@ -426,6 +429,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 }
             });
         } else {
+            profileBtn.innerText="Profile content"
             getAllPosts();
         }
     };
