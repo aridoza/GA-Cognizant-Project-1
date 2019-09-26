@@ -456,53 +456,71 @@ document.addEventListener('DOMContentLoaded', (event) => {
         }
     }
 
-    const userCommentsBtn = document.querySelector('#comments-button');
-    // show the comments a user made 
-    userCommentsBtn.addEventListener('click', async () => {
-        let response = await fetch(`http://thesi.generalassemb.ly:8080/user/comment`, {
-            method: 'GET',
-            headers: {
-                Authorization: 'Bearer ' + localStorage.token,
-                'Content-Type': 'application/json',
-            },
-        });
-        let data = await response.json();
-
+    // get all comments by user
+    const getUserComments = async (showCommentsBtn) => {
+        // clear the main content container
         mainDiv.innerHTML = '';
 
-        for (let i = 0; i < data.length; i++) {
-            let commentsContainer = document.createElement('div');
-            commentsContainer.id = 'post-container';
-            commentsContainer.className = 'container';
-            mainDiv.appendChild(commentsContainer);
-            //console.log(postContainer)
+        // show either the user's comments or the home page with all posts
+        if (showCommentsBtn.innerText === 'My Comments'){
+            showCommentsBtn.innerText = 'Go Back Home';
 
-            let divTitle = document.createElement('div');
-            commentsContainer.appendChild(divTitle);
-            divTitle.innerText = `Original Post Title: ${data[i].post.title}`;
+            // get all of this user's comments from the server
+            let response = await fetch(`http://thesi.generalassemb.ly:8080/user/comment`, {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.token,
+                    'Content-Type': 'application/json',
+                },
+            });
+            let data = await response.json();
 
-            let divThree = document.createElement('div');
-            commentsContainer.appendChild(divThree);
-            divThree.innerText = `Original Post Description: ${data[i].post.description}`;
-
-            // user's comment
-            let commentDiv = document.createElement('div');
-            commentsContainer.appendChild(commentDiv);
-            commentDiv.innerText = `${data[i].user.username}: ${data[i].text}`;
-
-            let div = document.createElement('div');
-            div.innerText = data[i].user.username;
-            mainDiv.appendChild(div);
-
-            let deleteCommentButton = document.createElement('button');
-            deleteCommentButton.className = 'btn btn-primary';
-            deleteCommentButton.innerText = 'delete comment';
-            deleteCommentButton.addEventListener('click', () => deleteComment(data[i].id));
-            commentsContainer.appendChild(deleteCommentButton);
+            // create a container for each comment, including the post it was posted on
+            for (let i = 0; i < data.length; i++) {
+                let post_id=data[i].id
                 
-            let post_id=data[i].id
-        }
-    });
+                let commentsContainer = document.createElement('div');
+                
+                commentsContainer.id = 'post-container';
+                commentsContainer.className = 'container';
+                mainDiv.appendChild(commentsContainer);
+                //console.log(postContainer)
+        
+                let divTitle = document.createElement('div');
+                commentsContainer.appendChild(divTitle);
+                divTitle.innerText = `Original Post Title: ${data[i].post.title}`;
+        
+                let divThree = document.createElement('div');
+                commentsContainer.appendChild(divThree);
+                divThree.innerText = `Original Post Description: ${data[i].post.description}`;
+        
+                // user's comment
+                let commentDiv = document.createElement('div');
+                commentsContainer.appendChild(commentDiv);
+                commentDiv.innerText = `${data[i].user.username}: ${data[i].text}`;
+        
+                let div = document.createElement('div');
+                div.innerText = data[i].user.username;
+                mainDiv.appendChild(div);
+        
+                let deleteCommentButton = document.createElement('button');
+                deleteCommentButton.className = 'btn btn-primary';
+                deleteCommentButton.innerText = 'delete comment';
+                deleteCommentButton.addEventListener('click', () => deleteComment(data[i].id));
+                commentsContainer.appendChild(deleteCommentButton);      
+            }
+        } else {
+            showCommentsBtn.innerText = 'My Comments';
+            getAllPosts();
+        };
+
+
+    }
+
+    // reference to the 'My Comments' button
+    const userCommentsBtn = document.querySelector('#comments-button');
+    // show the comments a user made 
+    userCommentsBtn.addEventListener('click', () => getUserComments(userCommentsBtn));
 
     // return user to home page and show all posts (only show home button when user is logged in)
     // idea: make a div below the nav that would show content depending on what button the user presses?
