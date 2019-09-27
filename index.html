@@ -7,20 +7,21 @@
     <!-- Bootstrap CDN -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" href="public/PostFeed.png">
+    <link rel="icon" href="public/No MTA.png">
     <link href="https://fonts.googleapis.com/css?family=Noto+Sans+TC&display=swap" rel="stylesheet">
-    <title>PostFeed</title>
+    <title>VentBook</title>
 </head>
 <body>
     <div class="container-fluid">
         <!-- Div for notifications -->
         <div class="collapse" id="notifications-div"></div>
+        
 
         <!-- Login and Signup Container -->
         <div id="login-signup-container" class="container">
             <!-- Login Container -->
             <div id="login-div" class="container">
-                <h2 id="front-page">Log In To Your Account</h2>
+                <h2 id="front-page">Log In To VentBook</h2>
                
                 <input id="login-email" type="text" placeholder="email">
                 <input id="login-password" type="password" password placeholder="password">
@@ -48,8 +49,7 @@
             <!-- <button id="logout-btn" class="btn btn-primary">Log Out</button> -->
             <!-- Profile Content -->
             <div id="user-profile" class="container nav-bar">
-                <div id="site-logo"><img src="public/PostFeed.png"></div>
-                
+                <div id="site-logo"><img src="public/No MTA.png"></div>
                 <div class="container top-buttons">
                     <div class="just-buttons">
                     <button id="profile-button" class="btn btn-primary">Profile Content</button>
@@ -62,6 +62,7 @@
     
             </div>
 
+            <!-- Update Profile Content -->
             <button class="btn btn-primary" id="update-profile"type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                 Update Profile
               </button>
@@ -85,9 +86,26 @@
                     </div>
                     <button type="submit" class="btn btn-primary" id="updateProfile">Submit</button>
                   </form>
-
-              </div>
+                  
+                </div>
             </div>
+            <!-- End Update Profile Content -->
+
+
+            <!-- View Profile Section -->
+
+            <button class="btn btn-primary" id="view-profile"type="button" data-toggle="collapse" data-target="#viewProfile" aria-expanded="false" aria-controls="collapseExample">
+                    View Profile
+                  </button>
+                <div class="collapse" id="viewProfile">
+                  <div class="card card-body">
+                      <h5>Alternate Email Address: </h5>
+                      <h5>Phone Number: </h5>
+                      <h5>Address: </h5>
+                    </div>
+                </div>
+
+            <!-- End View Profile Section -->
 
 
 
