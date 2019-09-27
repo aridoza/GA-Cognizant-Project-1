@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         let userName= localStorage.username
-        userName.setAttibure('#user-name')
+        userName.id = 'user-name';
         console.log(userName)
 
         //console.log(sessionStorage.token);
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (response.status === 200) {
                 comment.value = '';
                 alert('Successfully added comment!');
-                return getComments(id);
+                getAllPosts();
             } else {
                 alert("Sorry, we couldn't add your comment. Please try again");
             }
@@ -272,8 +272,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             
             
             // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
-            commentsContainer.innerText = postComments.length > 0 
-            ? postComments.map(item => `Made by: ${item.user.username}: ${item.text}`) 
+            commentsContainer.innerHTML = postComments.length > 0 
+            ? postComments.map(item => `<p id="comments-container">Made by: ${item.user.username}: ${item.text}</p>`).join('') 
             : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
             
             // let hideCommentsButton = document.createElement('button');
@@ -405,6 +405,16 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }),
         })
         .catch(err => console.log('Error creating new post: ', err));
+
+        if (response.status === 200) {
+            newPostTitle.value = '';
+            newPostContent.value = ''
+            alert('Post added successfully!');
+            return getAllPosts();
+        } else {
+            alert('Error adding post, please try again.');
+        }
+
         let data = await response.json();
         //.catch(err => console.log('Error creating new post: ', err));
 
