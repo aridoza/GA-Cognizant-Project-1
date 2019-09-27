@@ -31,6 +31,11 @@
     
 }
 
+#comments-container {
+    display: flex;
+    flex-direction: column;
+}
+
 /* input {
     display: flex;
     align-items: center;
@@ -89,7 +94,7 @@
     margin: auto 0;
 }
 .just-buttons{
-    /* border: 2px solid green; */
+    border: 2px solid green;
     margin-right:-50px;
     /* float:right; */
     margin-top:-20px;
