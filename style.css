@@ -36,20 +36,31 @@
     align-items: center;
     justify-content: center;
 } */
-
+#username-display{
+    color:#1995AD;
+    font-family: 'Dancing Script', cursive;
+    font-size: 35px;
+    font-weight: 900;
+    margin-right:30px;
+    /* border:1px solid black; */
+    
+}
 #site-logo img{
     display: inline-block;
     width: 100px;
     height: 100px;
 } 
 .nav-bar{
-    border: 2px solid red;
+    border-bottom: 2px solid gray;
     display:flex;
     flex-direction:row;
+    margin-bottom:30px;
 }
-#user-name{
+/* #user-name{
     color:blue;
-}
+    
+    
+} */
 .new-post-container{
     /* border: 2px solid green; */
     margin: 10px;
@@ -68,12 +79,44 @@
     margin:5px;
 }
 .top-buttons{
-    border: 2px solid yellow;
+    /* border: 2px solid yellow; */
     display:flex;
     flex-direction: row;
     height:40px;
-    justify-content: space-between;
+    justify-content: space-around;
     margin-top:15px;
     flex-direction: row-reverse;
     margin: auto 0;
+}
+.just-buttons{
+    /* border: 2px solid green; */
+    margin-right:-50px;
+    /* float:right; */
+    margin-top:-20px;
+
+
+}
+#comments-wrapper{
+    display:flex;
+    flex-direction: column;
+    border: 2px solid green;
+    margin-bottom:10px;
+
+}
+
+#login-div{
+   
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    text-align: center;
+    width: 600px;
+    height: 200px;
+    position: absolute;
+    margin:auto 0;
+    margin-top:120px;
+   
+
+}
+#front-page{
+    font-weight:900;
+    margin-bottom:20px;
 }

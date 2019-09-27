@@ -124,6 +124,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         
+        
         //console.log(localStorage);
 
         //console.log(responseData);
@@ -241,12 +242,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
             let postComments = await getComments(postId);
             let commentsContainer = document.createElement('div');
             commentsContainer.className = 'container';
+            commentsContainer.id="comments-wrapper";
     
             
             
             // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
             commentsContainer.innerText = postComments.length > 0 
-            ? postComments.map(item => `${item.user.username}: ${item.text}`) 
+            ? postComments.map(item => `Made by: ${item.user.username}: ${item.text}`) 
             : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
             
             // let hideCommentsButton = document.createElement('button');
@@ -291,7 +293,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         div.style.color="#1995AD"
                         div.style.fontSize="30px";
                         div.style.fontWeight = "900"
-                        div.style.fontFamily="Noto Sans TC"
+                        div.style.fontFamily="'Dancing Script', cursive"
                         
                         let divThree=document.createElement('div')
                         postContainer.appendChild(divThree)
@@ -306,6 +308,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         divFour.innerText=res[i].description
                         divFour.style.fontSize="20px"
                         divFour.style.marginBottom="10px"
+                        divFour.style.fontWeight="900"
 
                         // input field to add comment
                         let addCommentInput = document.createElement('input');
@@ -417,14 +420,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     let divTitle = document.createElement('div');
                     postContainer.appendChild(divTitle);
                     divTitle.innerText = res[i].title;
+                    divTitle.style.fontFamily="'Dancing Script', cursive";
+                    divTitle.style.color="#1995AD"
+                    divTitle.style.fontSize="30px";
+                    divTitle.style.fontWeight = "900"
+                        
+                    
     
                     let divThree = document.createElement('div');
                     postContainer.appendChild(divThree);
                     divThree.innerText = res[i].description;
+                    divThree.style.fontSize="20px"
+                    divThree.style.fontFamily="Noto Sans TC"
     
                     let div = document.createElement('div');
-                    div.innerText = res[i].user.username;
+                    div.innerText = (`Made by: ${res[i].user.username}`);
                     postContainer.appendChild(div);
+                    
     
                     let deletePostButton = document.createElement('button');
                     deletePostButton.innerText = 'delete post';
@@ -520,6 +532,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let divTitle = document.createElement('div');
                 commentsContainer.appendChild(divTitle);
                 divTitle.innerText = `Original Post Title: ${data[i].post.title}`;
+                divTitle.style.fontFamily="'Dancing Script', cursive";
+                divTitle.style.color="#1995AD"
+                divTitle.style.fontSize="30px";
+                divTitle.style.fontWeight = "900"
+
         
                 let divThree = document.createElement('div');
                 commentsContainer.appendChild(divThree);
@@ -529,6 +546,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let commentDiv = document.createElement('div');
                 commentsContainer.appendChild(commentDiv);
                 commentDiv.innerText = `${data[i].user.username}: ${data[i].text}`;
+
         
                 let deleteCommentButton = document.createElement('button');
                 deleteCommentButton.className = 'btn btn-primary';
