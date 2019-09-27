@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         let userName= localStorage.username
-        userName.setAttibure('#user-name')
+        userName.id='user-name'
         console.log(userName)
 
         //console.log(sessionStorage.token);
@@ -272,9 +272,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
             
             
             // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
-            commentsContainer.innerText = postComments.length > 0 
-            ? postComments.map(item => `Made by: ${item.user.username}: ${item.text}`) 
-            : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
+            commentsContainer.innerHTML = postComments.length > 0 
+            ? postComments.map(item => `<p id="comments-container">Made by: ${item.user.username}: ${item.text}</p>`).join('')
+           : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
+            
+            
+           
             
             // let hideCommentsButton = document.createElement('button');
             // hideCommentsButton.className = 'btn btn-primary';
