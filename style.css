@@ -1,5 +1,14 @@
 #login-signup-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    width: 90vw;
+    height: 90vh;
+}
 
+body {
+    width: 95vw;
+    height: 95vh;
 }
 
 #notifications-div {
@@ -7,15 +16,6 @@
     height: auto;
     text-align: center;
     font-size: 16px;
-}
-
-#login-div {
-    text-align: center;
-}
-
-#signup-div {
-    display: none;
-    text-align: center;
 }
 
 #all-posts {
@@ -123,13 +123,26 @@
    
     box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
     text-align: center;
-    width: 600px;
-    height: 200px;
-    position: absolute;
-    margin:auto 0;
-    margin-top:120px;
+    width: 45vw;
+    height: 35vh;
+    /* position: absolute; */
+    /* margin:auto 0; */
+    margin-top:10vh;
    
 
+}
+
+#login-div button, #signup-div button {
+    margin-top: 1vh;
+}
+
+#signup-div {
+    display: none;
+    text-align: center;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    width: 45vw;
+    height: 35vh;
+    margin-top:10vh;
 }
 #front-page{
     font-weight:900;

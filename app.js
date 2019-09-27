@@ -47,6 +47,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Main div below nav
     let mainDiv = document.querySelector('#main-content');
 
+    // button to view profile
+    const viewProfileBtn = document.querySelector('#view-profile');
+
     // method to show a notification based on user action
     const notifier = (message, messageColor) => {
         notificationsDiv.innerText = message;
@@ -80,6 +83,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // remove all the posts and show user the login/signup forms
         document.querySelector('#all-posts').style.display = 'none';
         document.querySelector('#login-signup-container').style.display = 'inline-block';
+
+        notifier('Successfully logged out', 'blue');
     };
 
 
@@ -119,6 +124,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // Make a post request to the API when the user signs up for a new account
     const addNewUser = async () => {
+        if (document.querySelector('#signup-email').value === '' || 
+        document.querySelector('#signup-password').value === '' ||
+        document.querySelector('#signup-username').value === '') {
+            return notifier('Error: All fields required for signup', 'red');
+        }
         let data = {
             email: document.querySelector('#signup-email').value,
             password: document.querySelector('#signup-password').value,
@@ -172,7 +182,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             checkIfAlreadyLoggedIn();
             clearLoginAndSignupFields();
             confirmCredentials();
-            addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
+            //addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
         } else {
             alert('Username already exists. Please try again.')
         }
@@ -223,24 +233,28 @@ document.addEventListener('DOMContentLoaded', (event) => {
             body: JSON.stringify(data),
         });
 
-        let responseData = await response.json();
-
-        localStorage.setItem('token', responseData.token);
-        localStorage.setItem('username', responseData.username);
-        let userName= localStorage.username
-        userName.id = 'user-name';
-        console.log(userName)
-
-        //console.log(sessionStorage.token);
-
         // confirm the login was successful, then take user to posts page
-        if (localStorage.getItem('token')) {
+        if (response.status === 200){
+            let responseData = await response.json();
+    
+            localStorage.setItem('token', responseData.token);
+            localStorage.setItem('username', responseData.username);
+            let userName= localStorage.username
+            userName.id = 'user-name';
+
             checkIfAlreadyLoggedIn();
             clearLoginAndSignupFields();
             confirmCredentials();
         } else {
-            alert('Login failed. Please try again.')
+            notifier('Login failed. Please try again.', 'red');
         }
+
+
+        //console.log(sessionStorage.token);
+
+        // if (localStorage.getItem('token')) {
+        // } else {
+        // }
     }
 
     // create a new user, store token in localStorage, and show the home page
@@ -264,7 +278,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // check if user is logged in to add comments
     const newCommentHandler = async (id, comment) => {
         if (comment.value === '') {
-            return alert("Error: Your comment was blank. Don't be shy!");
+            return notifier("Error: Your comment was blank. Don't be shy!", 'red');
         }
         if (localStorage.getItem('token')){
             let response = await fetch(`http://thesi.generalassemb.ly:8080/comment/${id}`, {
@@ -283,14 +297,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             if (response.status === 200) {
                 comment.value = '';
-                alert('Successfully added comment!');
+                notifier('Successfully added comment!', 'green');
                 getAllPosts();
             } else {
-                alert("Sorry, we couldn't add your comment. Please try again");
+                notifier("Sorry, we couldn't add your comment. Please try again", 'red');
             }
     
         } else {
-            return alert('You must be signed in to add a comment');
+            return notifier('You must be signed in to add a comment', 'red');
         }
     }
     
@@ -452,7 +466,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             getAllPosts();
             //alert('Post added successfully!');
         } else {
-            notifier("Error adding post, please try again", "green");
+            notifier("Error adding post, please try again", "red");
             //alert('Error adding post, please try again.');
         }
 
@@ -464,6 +478,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
     
     const showUserPosts = (profileBtn) => {
+        if (userCommentsBtn.innerText !== 'My Comments') {
+            userCommentsBtn.innerText = 'My Comments';
+        }
         mainDiv.innerHTML = '';
 
         if (profileBtn.innerText === 'Profile Content'){
@@ -577,6 +594,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     // get all comments by user
     const getUserComments = async (showCommentsBtn) => {
+        if (profileButton.innerText !== 'Profile Content') {
+            profileButton.innerText = 'Profile Content';
+        }
         // clear the main content container
         mainDiv.innerHTML = '';
 
