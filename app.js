@@ -3,7 +3,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // check if user is logged in
     const checkIfAlreadyLoggedIn = () => {
         if (localStorage.getItem('token')){
-            document.querySelector('#username-display').innerText = `Hello, ${localStorage.username}!`;
+
+            
+
+            document.querySelector('#username-display').innerHTML = `
+            <span class='green'>🅗</span>
+            <span class='blue'>🅔</span>
+            <span class='grey'>🅛</span>
+            <span class='grey'>🅛</span>
+            <span class='green'>🅞</span> 
+            ,${localStorage.username}!`;
+
         }
     };
 
