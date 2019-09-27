@@ -149,10 +149,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         
+        //create profile fetch to use the token
+        let profileResponse = await fetch('http://thesi.generalassemb.ly:8080/profile', {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + localStorage.token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "additionalEmail" : "",
+	            "mobile" : "",
+	            "address" : ""
+                
+            }),
+        });
+        // add event listener to update profile 
         
-        //console.log(localStorage);
+        
 
-        //console.log(responseData);
+        let profileUpdate = await profileResponse.json();
+        
+
+        // localStorage.setItem('token', responseData.token);
+        // localStorage.setItem('username', responseData.username);
+
         
         // confirm the signup was successful, then take user to posts page
         if (localStorage.getItem('token')) {
@@ -164,6 +185,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
             alert('Username already exists. Please try again.')
         }
     };
+
+    
+    let additionalEmailInput = document.querySelector('#exampleInputEmail');
+    let mobile =document.querySelector(`#exampleInputPhoneNumber`)
+    let address= document.querySelector(`#exampleInputAddress`)
+     
+
+    let updateProfileButton= document.getElementById('updateProfile')
+    updateProfileButton.addEventListener('click', async ()=>{
+        let response = await fetch(`http://thesi.generalassemb.ly:8080/profile`,{
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + localStorage.token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "additionalEmail" : additionalEmailInput.value,
+	            "mobile" : mobile.value,
+	            "address" : address.value
+                
+            }),
+        })
+
+    })
 
 
     // login existing user
@@ -190,7 +236,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         let userName= localStorage.username
-        userName.id='user-name'
+        userName.id = 'user-name';
         console.log(userName)
 
         //console.log(sessionStorage.token);
@@ -246,7 +292,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             if (response.status === 200) {
                 comment.value = '';
                 alert('Successfully added comment!');
-                return getComments(id);
+                getAllPosts();
             } else {
                 alert("Sorry, we couldn't add your comment. Please try again");
             }
@@ -273,11 +319,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
             
             // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
             commentsContainer.innerHTML = postComments.length > 0 
-            ? postComments.map(item => `<p id="comments-container">Made by: ${item.user.username}: ${item.text}</p>`).join('')
-           : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
-            
-            
-           
+            ? postComments.map(item => `<p id="comments-container">Made by: ${item.user.username}: ${item.text}</p>`).join('') 
+            : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
             
             // let hideCommentsButton = document.createElement('button');
             // hideCommentsButton.className = 'btn btn-primary';
@@ -301,6 +344,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // get all the posts
             const getAllPosts = () => {
+                mainDiv.innerHTML="";
                 fetch(`http://thesi.generalassemb.ly:8080/post/list`)
                 .then(res => {
                     return res.json()              
@@ -408,6 +452,17 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }),
         })
         .catch(err => console.log('Error creating new post: ', err));
+
+        if (response.status === 200) {
+            newPostTitle.value = '';
+            newPostContent.value = ''
+            getAllPosts();
+            alert('Post added successfully!');
+            //getAllPosts();
+        } else {
+            alert('Error adding post, please try again.');
+        }
+
         let data = await response.json();
         //.catch(err => console.log('Error creating new post: ', err));
 
@@ -604,3 +659,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 
 });
+
+
+$('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+  })
