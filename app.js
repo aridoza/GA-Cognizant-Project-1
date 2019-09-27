@@ -141,10 +141,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         
+        //create profile fetch to use the token
+        let profileResponse = await fetch('http://thesi.generalassemb.ly:8080/profile', {
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + localStorage.token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "additionalEmail" : "",
+	            "mobile" : "",
+	            "address" : ""
+                
+            }),
+        });
+        // add event listener to update profile 
         
-        //console.log(localStorage);
+        
 
-        //console.log(responseData);
+        let profileUpdate = await profileResponse.json();
+        
+
+        // localStorage.setItem('token', responseData.token);
+        // localStorage.setItem('username', responseData.username);
+
         
         // confirm the signup was successful, then take user to posts page
         if (localStorage.getItem('token')) {
@@ -156,6 +177,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
             alert('Username already exists. Please try again.')
         }
     };
+
+    
+    let additionalEmailInput = document.querySelector('#exampleInputEmail');
+    let mobile =document.querySelector(`#exampleInputPhoneNumber`)
+    let address= document.querySelector(`#exampleInputAddress`)
+     
+
+    let updateProfileButton= document.getElementById('updateProfile')
+    updateProfileButton.addEventListener('click', async ()=>{
+        let response = await fetch(`http://thesi.generalassemb.ly:8080/profile`,{
+            method: 'POST',
+            headers: {
+                Authorization: 'Bearer ' + localStorage.token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                "additionalEmail" : additionalEmailInput.value,
+	            "mobile" : mobile.value,
+	            "address" : address.value
+                
+            }),
+        })
+
+    })
 
 
     // login existing user
@@ -290,7 +336,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             // get all the posts
             const getAllPosts = () => {
-                mainDiv.innerHTML = '';
+                mainDiv.innerHTML="";
                 fetch(`http://thesi.generalassemb.ly:8080/post/list`)
                 .then(res => {
                     return res.json()              
@@ -606,3 +652,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
                 
 });
+
+
+$('#myModal').on('shown.bs.modal', function () {
+    $('#myInput').trigger('focus')
+  })

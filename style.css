@@ -106,6 +106,7 @@
     margin-right:-50px;
     /* float:right; */
     margin-top:-20px;
+    width: 600px;
 
 
 }
@@ -114,6 +115,7 @@
     flex-direction: column;
     border: 2px solid green;
     margin-bottom:10px;
+    
 
 }
 
@@ -133,3 +135,7 @@
     font-weight:900;
     margin-bottom:20px;
 }
+/* .profile-ex{
+    border: 1px solid red;
+    height:300px;
+} */
