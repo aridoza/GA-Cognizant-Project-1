@@ -41,8 +41,33 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // All posts Div
     const postsDiv = document.querySelector('#all-posts');
 
-    // Main div below nav
+    // Main div below nav - append all API content here as needed
     let mainDiv = document.querySelector('#main-content');
+
+    // method to show user notification
+    const notifier = (message) => {
+        let messageContainer = document.createElement('div');
+        messageContainer.className = 'toast';
+        messageContainer.role = 'alert';
+        messageContainer.ariaLive = 'assertive';
+        messageContainer.ariaAtomic = 'true';
+        //messageContainer.delay = 2000;
+
+        let messageHeader = document.createElement('div');
+        messageHeader.className = 'toast-header';
+        messageHeader.innerHTML = `<strong class="mr-auto">PostFeed</strong>`;
+        messageContainer.appendChild(messageHeader);
+
+        let messageBody = document.createElement('div');
+        messageBody.className = 'toast-body';
+        messageBody.innerText = message;
+        
+        messageContainer.appendChild(messageBody);
+        postsDiv.appendChild(messageContainer);
+    };
+
+    let showNotification = window.setTimeout(notifier);
+
 
     // show all posts
     const showPosts = () => {
@@ -124,7 +149,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         
-        
         //console.log(localStorage);
 
         //console.log(responseData);
@@ -165,7 +189,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         localStorage.setItem('token', responseData.token);
         localStorage.setItem('username', responseData.username);
         let userName= localStorage.username
-        userName.setAttibure('#user-name')
+        //userName.setAttibure(id, '#user-name')
         console.log(userName)
 
         //console.log(sessionStorage.token);
@@ -220,8 +244,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
             if (response.status === 200) {
                 comment.value = '';
-                alert('Successfully added comment!');
-                return getComments(id);
+                notifier('Successfully added comment!');
+                getAllPosts();
             } else {
                 alert("Sorry, we couldn't add your comment. Please try again");
             }
@@ -242,13 +266,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
             let postComments = await getComments(postId);
             let commentsContainer = document.createElement('div');
             commentsContainer.className = 'container';
-            commentsContainer.id="comments-wrapper";
+            //commentsContainer.id = 'comments-container';
     
             
             
             // tweak this to map out the comments if there are multiple for each post - use bootstrap classes to make it easier
-            commentsContainer.innerText = postComments.length > 0 
-            ? postComments.map(item => `Made by: ${item.user.username}: ${item.text}`) 
+            commentsContainer.innerHTML = postComments.length > 0 
+            ? postComments.map(item => `<p id="comments-container">${item.user.username}: ${item.text}</p>`).join('') 
             : localStorage === '' ? 'You must login to add a comment' : 'No comments yet - be the first to comment!';
             
             // let hideCommentsButton = document.createElement('button');
@@ -271,86 +295,73 @@ document.addEventListener('DOMContentLoaded', (event) => {
     };
 
 
-            // get all the posts
-            const getAllPosts = () => {
-                fetch(`http://thesi.generalassemb.ly:8080/post/list`)
-                .then(res => {
-                    return res.json()              
-                })
-                .then(res=>{
-                    
-                    //console.log(res)
-                    for (let i=res.length-1; i >= 0; i--){
-                        // use the post id to get all the comments
-                        let postContainer = document.createElement('div');
-                        postContainer.id = 'post-container';
-                        postContainer.className = 'container';
-                        mainDiv.appendChild(postContainer);
-                        
-                        let div=document.createElement('div')
-                        postContainer.appendChild(div)
-                        div.innerText=res[i].title
-                        div.style.color="#1995AD"
-                        div.style.fontSize="30px";
-                        div.style.fontWeight = "900"
-                        div.style.fontFamily="'Dancing Script', cursive"
-                        
-                        let divThree=document.createElement('div')
-                        postContainer.appendChild(divThree)
-                        divThree.innerText=(`Made by: ${res[i].user.username}`)
-                        divThree.style.fontSize="15px"
-                        divThree.style.fontStyle="oblique";
-                        
-
-
-                        let divFour=document.createElement('div')
-                        postContainer.appendChild(divFour)
-                        divFour.innerText=res[i].description
-                        divFour.style.fontSize="20px"
-                        divFour.style.marginBottom="10px"
-                        divFour.style.fontWeight="900"
-
-                        // input field to add comment
-                        let addCommentInput = document.createElement('input');
-                        postContainer.appendChild(addCommentInput);
-                        addCommentInput.style.width="250px"
-                        addCommentInput.style.height="30px"
-                        addCommentInput.style.marginRight="15px"
-                        addCommentInput.style.marginBottom="20px"
-
-
-
-                        // add comment button
-                        let addCommentButton=document.createElement('button');
-                        addCommentButton.className = 'btn btn-primary';
-                        addCommentButton.innerText="Add comment";
-                        postContainer.appendChild(addCommentButton);
-                        addCommentButton.style.marginRight="30px"
-
-                        addCommentButton.addEventListener('click', () => newCommentHandler(res[i].id, addCommentInput));
-
-                        // show all comments button
-                        let showCommentsButton = document.createElement('button');
-                        showCommentsButton.className = 'btn btn-primary';
-                        showCommentsButton.id = 'post-' + res[i].id;
-
-                        showCommentsButton.innerText = 'Show Comments';
-                        postContainer.appendChild(showCommentsButton);
-
-                        let commentsContainer = document.createElement('div');
-                        commentsContainer.id = 'comments-container';
-                        postContainer.appendChild(commentsContainer);
-                            
-                        // display a single post if it's clicked on
-                        showCommentsButton.addEventListener('click', () => showPostComments(commentsContainer, res[i].id));   
-                        
-                        let id=res[i].id
-                        };
-                    })
+    // get all the posts
+    const getAllPosts = () => {
+        mainDiv.innerHTML = '';
+        fetch(`http://thesi.generalassemb.ly:8080/post/list`)
+        .then(res => {
+            return res.json()              
+        })
+        .then(res=>{
+            
+            // show posts with most recent on top
+            for (let i=res.length-1; i >= 0; i--){
+                // use the post id to get all the comments
+                let postContainer = document.createElement('div');
+                postContainer.id = 'post-container';
+                postContainer.className = 'container';
+                mainDiv.appendChild(postContainer);
                 
-            }
+                // post title
+                let div=document.createElement('div');
+                postContainer.appendChild(div);
+                div.innerText=res[i].title;
 
-            getAllPosts();
+                // post description
+                let divTwo=document.createElement('div');
+                postContainer.appendChild(divTwo);
+                divTwo.innerText=res[i].description;
+                
+                // username of post creator
+                let divThree=document.createElement('div')
+                postContainer.appendChild(divThree)
+                divThree.innerText=`Posted by ${res[i].user.username}`;
+
+                // input field to add comment
+                let addCommentInput = document.createElement('input');
+                postContainer.appendChild(addCommentInput);
+
+                // add comment button
+                let addCommentButton=document.createElement('button');
+                addCommentButton.className = 'btn btn-primary';
+                addCommentButton.innerText="Add comment";
+                postContainer.appendChild(addCommentButton);
+
+                // adds the new comment to the post when the user clicks 'add comment'
+                addCommentButton.addEventListener('click', () => newCommentHandler(res[i].id, addCommentInput));
+
+                // show all comments button
+                let showCommentsButton = document.createElement('button');
+                showCommentsButton.className = 'btn btn-primary';
+                showCommentsButton.id = 'post-' + res[i].id;
+                showCommentsButton.innerText = 'Show Comments';
+                postContainer.appendChild(showCommentsButton);
+
+                // add the comments to the bottom of each post
+                let commentsContainer = document.createElement('div');
+                commentsContainer.id = 'comments-container';
+                postContainer.appendChild(commentsContainer);
+                    
+                // display a single post if it's clicked on
+                showCommentsButton.addEventListener('click', () => showPostComments(commentsContainer, res[i].id));   
+                
+                let id=res[i].id
+                };
+            })
+        
+    }
+
+    getAllPosts();
 
             // show all posts if user clicks main logo
     // mainLogo.addEventListener('click', () => getAllPosts());
@@ -380,11 +391,23 @@ document.addEventListener('DOMContentLoaded', (event) => {
             }),
         })
         .catch(err => console.log('Error creating new post: ', err));
-        let data = await response.json();
-        //.catch(err => console.log('Error creating new post: ', err));
 
-        return data;
-    })   
+        if (response.status === 200){
+            let data = await response.json();
+            getAllPosts();
+            //alert('Successfully added new Post!');
+            showAlert(document.querySelector('#all-posts'));
+        }
+    });
+    
+    const showAlert = (divToAppendTo) => {
+        let alertDiv = document.createElement('div');
+        alertDiv.className = 'alert alert-success';
+        alertDiv.role = 'alert';
+        alertDiv.innerText = 'Successfully added new post!';
+
+        divToAppendTo.appendChild(alertDiv);
+    }
     
     
     const showUserPosts = (profileBtn) => {
@@ -420,23 +443,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     let divTitle = document.createElement('div');
                     postContainer.appendChild(divTitle);
                     divTitle.innerText = res[i].title;
-                    divTitle.style.fontFamily="'Dancing Script', cursive";
-                    divTitle.style.color="#1995AD"
-                    divTitle.style.fontSize="30px";
-                    divTitle.style.fontWeight = "900"
-                        
-                    
     
                     let divThree = document.createElement('div');
                     postContainer.appendChild(divThree);
                     divThree.innerText = res[i].description;
-                    divThree.style.fontSize="20px"
-                    divThree.style.fontFamily="Noto Sans TC"
     
                     let div = document.createElement('div');
-                    div.innerText = (`Made by: ${res[i].user.username}`);
+                    div.innerText = res[i].user.username;
                     postContainer.appendChild(div);
-                    
     
                     let deletePostButton = document.createElement('button');
                     deletePostButton.innerText = 'delete post';
@@ -532,11 +546,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let divTitle = document.createElement('div');
                 commentsContainer.appendChild(divTitle);
                 divTitle.innerText = `Original Post Title: ${data[i].post.title}`;
-                divTitle.style.fontFamily="'Dancing Script', cursive";
-                divTitle.style.color="#1995AD"
-                divTitle.style.fontSize="30px";
-                divTitle.style.fontWeight = "900"
-
         
                 let divThree = document.createElement('div');
                 commentsContainer.appendChild(divThree);
@@ -546,7 +555,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 let commentDiv = document.createElement('div');
                 commentsContainer.appendChild(commentDiv);
                 commentDiv.innerText = `${data[i].user.username}: ${data[i].text}`;
-
         
                 let deleteCommentButton = document.createElement('button');
                 deleteCommentButton.className = 'btn btn-primary';
