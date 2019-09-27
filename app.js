@@ -60,6 +60,36 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // button to view profile
     const viewProfileBtn = document.querySelector('#view-profile');
 
+    viewProfileBtn.addEventListener('click', async () => {
+        if (viewProfileBtn.className === 'btn btn-primary clicked') {
+            viewProfileBtn.className = 'btn btn-primary';
+            return;
+        } else {
+            viewProfileBtn.className = 'btn btn-primary clicked';
+            let alternateEmail = document.querySelector('#profile-alt-email');
+            let phoneNumber = document.querySelector('#profile-phone');
+            let address = document.querySelector('#profile-address');
+    
+            let response = await fetch('http://thesi.generalassemb.ly:8080/profile', {
+                method: 'GET',
+                headers: {
+                    Authorization: 'Bearer ' + localStorage.token,
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+            });
+    
+            if (response.status === 200) {
+                let responseData = await response.json();
+                alternateEmail.innerText = `Alternate Email: ${responseData.additionalEmail}`;
+                phoneNumber.innerText = `Phone Number: ${responseData.mobile}`;
+                address.innerText = `Address: ${responseData.address}`;
+            } else {
+                notifier('Error: no profile found.', 'red');
+            }
+        }
+    })
+
     // method to show a notification based on user action
     const notifier = (message, messageColor) => {
         notificationsDiv.innerText = message;
@@ -180,21 +210,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
         
         
 
-        let profileUpdate = await profileResponse.json();
         
-
+        
         // localStorage.setItem('token', responseData.token);
         // localStorage.setItem('username', responseData.username);
-
         
-        // confirm the signup was successful, then take user to posts page
-        if (localStorage.getItem('token')) {
+        
+        // confirm the signup and profile creation were successful, then take user to posts page
+        if (profileResponse.status === 200) {
+            let profileUpdate = await profileResponse.json();
             checkIfAlreadyLoggedIn();
             clearLoginAndSignupFields();
             confirmCredentials();
+            notifier('Successfully created account. Welcome to VentBook!', 'green');
             //addCommentContentIfLoggedIn(document.querySelector('#comments-container'));
         } else {
-            alert('Username already exists. Please try again.')
+            notifier('Username already exists. Please try again.', 'red');
         }
     };
 
@@ -452,7 +483,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         let postContent = newPostContent.value;
 
         if (postTitle.innerText === '' || postContent === '') {
-            return alert("Error: Please make sure you add both a title and a body to your post");
+            return notifier("Error: Please make sure you add both a title and a body to your post", "red");
         }
 
         let response = await fetch('http://thesi.generalassemb.ly:8080/post', {
@@ -598,7 +629,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
         })
 
         if (response.status === 200) {
-            alert('Comment deleted successfully!');
+            notifier('Comment deleted successfully!', 'green');
+            getAllPosts();
+        } else {
+            notifier('Error deleting comment. Please try again.', 'red');
         }
     }
 
