@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', (event) => {
 
     checkIfAlreadyLoggedIn();
 
+    // notifications div
+    const notificationsDiv = document.querySelector('#notifications-div');
+
     // site logo image
     const mainLogo = document.querySelector('#site-logo')
 
@@ -44,30 +47,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Main div below nav
     let mainDiv = document.querySelector('#main-content');
 
-    // method to show user notification
-    const notifier = (message) => {
-        let messageContainer = document.createElement('div');
-        messageContainer.className = 'toast';
-        messageContainer.role = 'alert';
-        messageContainer.ariaLive = 'assertive';
-        messageContainer.ariaAtomic = 'true';
-        //messageContainer.delay = 2000;
+    // method to show a notification based on user action
+    const notifier = (message, messageColor) => {
+        notificationsDiv.innerText = message;
+        notificationsDiv.className = "collapse.show";
+        console.log(messageColor)
+        notificationsDiv.style.color = messageColor;
 
-        let messageHeader = document.createElement('div');
-        messageHeader.className = 'toast-header';
-        messageHeader.innerHTML = `<strong class="mr-auto">PostFeed</strong>`;
-        messageContainer.appendChild(messageHeader);
+        const hideMessage = () => {
+            notificationsDiv.innerText = "";
+            notificationsDiv.className = "collapse";
+        }
 
-        let messageBody = document.createElement('div');
-        messageBody.className = 'toast-body';
-        messageBody.innerText = message;
-        
-        messageContainer.appendChild(messageBody);
-        postsDiv.appendChild(messageContainer);
-    };
-
-    let showNotification = window.setTimeout(notifier);
-
+        window.setTimeout(() => hideMessage(), 2000);
+    }
 
     // show all posts
     const showPosts = () => {
@@ -456,11 +449,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
         if (response.status === 200) {
             newPostTitle.value = '';
             newPostContent.value = ''
+            notifier("Post added successfully!", "green");
             getAllPosts();
-            alert('Post added successfully!');
-            //getAllPosts();
+            //alert('Post added successfully!');
         } else {
-            alert('Error adding post, please try again.');
+            notifier("Error adding post, please try again", "green");
+            //alert('Error adding post, please try again.');
         }
 
         let data = await response.json();
