@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     };
 
     let showNotification = window.setTimeout(notifier);
-    
+
 
     // show all posts
     const showPosts = () => {
@@ -450,7 +450,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     
                     let div = document.createElement('div');
                     div.innerText = res[i].user.username;
-                    mainDiv.appendChild(div);
+                    postContainer.appendChild(div);
     
                     let deletePostButton = document.createElement('button');
                     deletePostButton.innerText = 'delete post';
