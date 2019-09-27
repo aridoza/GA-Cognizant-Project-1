@@ -27,6 +27,11 @@
     margin-top: 10px;
 }
 
+#comments-container {
+    display: flex;
+    flex-direction: column;
+}
+
 /* input {
     display: flex;
     align-items: center;
