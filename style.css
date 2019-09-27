@@ -17,6 +17,7 @@
 
 #user-profile {
     /* display: none; */
+    border: 2px solid blue;
 }
 
 #post-container {
