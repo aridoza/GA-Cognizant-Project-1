@@ -44,6 +44,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
     // Main div below nav
     let mainDiv = document.querySelector('#main-content');
 
+    // method to show user notification
+    const notifier = (message) => {
+        let messageContainer = document.createElement('div');
+        messageContainer.className = 'toast';
+        messageContainer.role = 'alert';
+        messageContainer.ariaLive = 'assertive';
+        messageContainer.ariaAtomic = 'true';
+        //messageContainer.delay = 2000;
+
+        let messageHeader = document.createElement('div');
+        messageHeader.className = 'toast-header';
+        messageHeader.innerHTML = `<strong class="mr-auto">PostFeed</strong>`;
+        messageContainer.appendChild(messageHeader);
+
+        let messageBody = document.createElement('div');
+        messageBody.className = 'toast-body';
+        messageBody.innerText = message;
+        
+        messageContainer.appendChild(messageBody);
+        postsDiv.appendChild(messageContainer);
+    };
+
+    let showNotification = window.setTimeout(notifier);
+
+
     // show all posts
     const showPosts = () => {
         postsDiv.style.display = 'inline-block';
