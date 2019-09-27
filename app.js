@@ -51,7 +51,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
     const notifier = (message, messageColor) => {
         notificationsDiv.innerText = message;
         notificationsDiv.className = "collapse.show";
-        console.log(messageColor)
         notificationsDiv.style.color = messageColor;
 
         const hideMessage = () => {
