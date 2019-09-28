@@ -9,6 +9,9 @@
 ## Fetch Post Route
 * https://stackoverflow.com/questions/50046841/proper-way-to-make-api-fetch-post-with-async-await
 
+## Unit Tests
+* https://stackoverflow.com/questions/41467126/testing-fetch-with-mocha-and-chai
+
 ## Technologies Used
 ### HTML
 * Used for main content being displayed to user
