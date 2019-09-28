@@ -51,8 +51,38 @@ document.addEventListener('DOMContentLoaded', (event) => {
 	// Main div below nav
 	let mainDiv = document.querySelector('#main-content');
 
-	// button to view profile
-	const viewProfileBtn = document.querySelector('#view-profile');
+// button to view profile
+const viewProfileBtn = document.querySelector('#view-profile');
+
+viewProfileBtn.addEventListener('click', async () => {
+    if (viewProfileBtn.className === 'btn btn-primary clicked') {
+        viewProfileBtn.className = 'btn btn-primary';
+        return;
+    } else {
+        viewProfileBtn.className = 'btn btn-primary clicked';
+        let alternateEmail = document.querySelector('#profile-alt-email');
+        let phoneNumber = document.querySelector('#profile-phone');
+        let address = document.querySelector('#profile-address');
+
+        let response = await fetch('http://thesi.generalassemb.ly:8080/profile', {
+            method: 'GET',
+            headers: {
+                Authorization: 'Bearer ' + localStorage.token,
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (response.status === 200) {
+            let responseData = await response.json();
+            alternateEmail.innerText = `Alternate Email: ${responseData.additionalEmail}`;
+            phoneNumber.innerText = `Phone Number: ${responseData.mobile}`;
+            address.innerText = `Address: ${responseData.address}`;
+        } else {
+            notifier('Error: no profile found.', 'red');
+        }
+    }
+});
 
 	// method to show a notification based on user action
 	const notifier = (message, messageColor) => {
